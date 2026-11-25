@@ -128,3 +128,8 @@ USP: unique, quality news, not just politics. Facts from 2+ reliable sources, or
 - make_bulletin.py/tts.py: if Puck quota runs out, keep Puck for all cached clips; drop stories without Puck, skip a missing intro/outro (silence); Microsoft only if < VN_MIN_PUCK_STORIES (7) stories have Puck. Backups build/*.bak_partial.
 - yt_upload.py + SETUP_YOUTUBE_UPLOAD.command: YouTube Data API uploader (stdlib). Uploads day D's am/pm editions after D+1 06:00, started from make_bulletin.py __main__ (detached) when ~/.vijaynews_yt_token.json exists. Verifies channel UCU6Jmy4g_BcI4o7QvPehLdg. After both editions uploaded, deletes that day's videos (never newest/playlist). Log upload.log, record uploaded_videos.txt. Waiting for Vijay's Google Cloud OAuth client + setup.
 - Mac restarted 22:5x; GO_LIVE not autostarted (no launchd.log). bulletin.json touched so the next start re-renders 25 Nov PM in Puck (outro skipped – quota).
+
+## RULE (Vijay, 25 Nov 2026): Oracle Cloud must stay ₹0
+- Only "Always Free-eligible" resources (VM.Standard.A1.Flex 2 OCPU / 12 GB). Never upgrade to Pay As You Go.
+- Weekly scheduled task "Oracle Cloud ₹0 billing watch" (trig_018dFuycJkkmXni5HqEUWgha, Mondays 20:17 IST) checks Gmail for Oracle charges/budget alerts and pushes an alert.
+- After the instance exists: create an Oracle Budget (Billing → Budgets) of ₹1 with an email alert at 1% actual spend.
