@@ -1,0 +1,100 @@
+VIJAY NEWS – AI PRESENTER CLIPS FOR THE PROMO (make in the Gemini app → Video / Veo)
+=====================================================================================
+
+Make 4 short clips (8 seconds each, 16:9 landscape). Save them in
+   /Volumes/One Touch/VijayNews/vijay-news/promo_clips/
+with EXACTLY these names:
+   presenter_1.mp4   presenter_2.mp4   presenter_3.mp4   presenter_4.mp4
+GO_LIVE rebuilds the promo by itself within ~15 minutes after a new clip lands there.
+(The promo plays the presenter's own voice from the clip. If his Kannada sounds wrong in a clip,
+ rename it to presenter_N_vo.mp4 – the promo will then use our own Kannada voice over that clip instead.)
+
+TIP for the same man in all 4 clips: make clip 1 first. If Gemini lets you add an image, take a
+screenshot of the man from clip 1 and attach it to clips 2–4 with "Use this same presenter".
+Always copy the SAME "PRESENTER + STUDIO" paragraph into every prompt.
+
+PRESENTER + STUDIO (paste at the start of every prompt)
+-------------------------------------------------------
+A fictional Indian male TV news anchor in his late 30s, well-groomed short black hair, clean-shaven,
+wearing a tailored dark navy suit, crisp white shirt and a deep red tie, confident and friendly.
+He stands in a modern TV news studio with a dark navy blue background, soft red and gold accent lights
+and large blurred screens behind him. He stands on the RIGHT third of the frame (leave the left side
+fairly empty for on-screen text). Medium shot, waist up, eye-level camera, subtle slow push-in.
+Professional broadcast lighting, sharp focus, realistic. No on-screen text, no captions, no logos,
+no subtitles. He is not a real or famous person.
+
+CLIP 1  →  presenter_1.mp4
+<PRESENTER + STUDIO paragraph>
+He looks into the camera, smiles warmly and opens with a small welcoming hand gesture, then says
+clearly in Kannada, at a natural news-anchor pace:
+"ನಮಸ್ಕಾರ! ವಿಜಯ್ ನ್ಯೂಸ್‌ಗೆ ಸ್ವಾಗತ. ನಿಖರ ಸುದ್ದಿ, ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ."
+(pronounced: "Namaskaara! Vijay News-ge swaagata. Nikhara suddi, nimma bhaasheyalli.")
+Quiet studio ambience, no music.
+
+CLIP 2  →  presenter_2.mp4
+<PRESENTER + STUDIO paragraph>
+He turns slightly towards the camera and gestures to the screens behind him, then says in Kannada:
+"ಪ್ರತಿದಿನ ಬೆಳಿಗ್ಗೆ ಮತ್ತು ಸಂಜೆ, ಹೊಸ ಸುದ್ದಿ ಬುಲೆಟಿನ್."
+(pronounced: "Pratidina beligge mattu sanje, hosa suddi bulletin.")
+Quiet studio ambience, no music.
+
+CLIP 3  →  presenter_3.mp4
+<PRESENTER + STUDIO paragraph>
+He speaks with a serious, trustworthy expression, one hand lightly open, and says in Kannada:
+"ಹಲವು ಮೂಲಗಳಿಂದ ಪರಿಶೀಲಿಸಿದ ಸುದ್ದಿ, ಸ್ಪಷ್ಟ ಕನ್ನಡದಲ್ಲಿ."
+(pronounced: "Halavu moolagalinda pariisheelisida suddi, spashta Kannadadalli.")
+Quiet studio ambience, no music.
+
+CLIP 4  →  presenter_4.mp4
+<PRESENTER + STUDIO paragraph>
+He smiles proudly, leans slightly forward and says in Kannada:
+"ವಿಜಯ್ ನ್ಯೂಸ್ – ಸಂಪೂರ್ಣವಾಗಿ ಎಐ ನಡೆಸುವ ಕನ್ನಡ ಸುದ್ದಿ ವಾಹಿನಿ. ಇಪ್ಪತ್ನಾಲ್ಕು ಗಂಟೆಯೂ ಲೈವ್!"
+(pronounced: "Vijay News – sampoornavaagi A-I nadesuva Kannada suddi vaahini. Ippatnaalku ganteyoo live!")
+Quiet studio ambience, no music.
+
+NOTES
+- The promo shows a small "AI ನಿರೂಪಕ" label on these clips (honest disclosure; keep YouTube's
+  "Altered or synthetic content" = Yes).
+- Wording: we say "fully AI-run Kannada news channel" – NOT "first AI news channel".
+- If a clip comes out longer than 10 s, only the first 10 s are used.
+
+BULLETIN OPENER  →  save as  /Volumes/One Touch/VijayNews/vijay-news/opener/opener.mp4
+---------------------------------------------------------------------------------------
+Plays at the very start of EVERY bulletin (morning and evening), then the normal bulletin follows unchanged.
+Keep it time-neutral (no "good morning"), 6–8 seconds.
+<PRESENTER + STUDIO paragraph – same man as the promo>
+He looks straight into the camera, gives a small nod and says clearly in Kannada at a brisk news pace:
+"ನಮಸ್ಕಾರ, ವಿಜಯ್ ನ್ಯೂಸ್‌ಗೆ ಸ್ವಾಗತ. ಈಗಿನ ಸುದ್ದಿಗಳು..."
+(pronounced: "Namaskaara, Vijay News-ge swaagata. Eegina suddigalu...")
+then turns slightly as if handing over to the screen. Quiet studio ambience, no music.
+The bulletin adds the "AI ನಿರೂಪಕ" label and the VIJAY NEWS logo on top automatically (first 12 s max are used).
+
+
+=====================================================================================
+PRESENTER REEL – 5 more short clips (25 Nov 2026). Save each into
+   /Volumes/One Touch/VijayNews/vijay-news/presenter_promos/   (any name, e.g. 03_rajya.mp4)
+or just tell Claude "done" – Claude downloads them from Gemini, trims the silence and adds them.
+They play back-to-back at the start of every promo, between bulletins.
+
+Use the same base text each time (this wording worked in Gemini):
+"A fictional Indian male digital presenter in his late 30s, well-groomed short black hair, clean-shaven,
+wearing a tailored dark navy suit, crisp white shirt and a deep red tie, confident and friendly. He stands
+in a modern TV studio with a dark navy blue background, soft red and gold accent lights and large blurred
+screens behind him. He stands on the RIGHT third of the frame, leaving the left side fairly empty. Medium
+shot, waist up, eye-level camera, subtle slow push-in. Professional broadcast lighting, sharp focus,
+realistic. No on-screen text, no captions, no logos, no subtitles. He is not a real or famous person."
+then add ONE of these endings:
+
+A) "He smiles at the camera, opens both hands and says clearly in Kannada:
+    'ರಾಜ್ಯ, ದೇಶ, ವಿದೇಶ – ಎಲ್ಲಾ ಸುದ್ದಿ ಒಂದೇ ಕಡೆ.' (pronounced 'Raajya, dhesha, vidhesha – ella suddhi ondhe kade.')
+    Quiet studio ambience, no music."
+B) "He points lightly towards the screens behind him and says in Kannada:
+    'ಕ್ರೀಡೆ, ಸಿನಿಮಾ ಮತ್ತು ತಂತ್ರಜ್ಞಾನ – ಪ್ರತಿದಿನ ಹೊಸದು.' (pronounced 'Kreede, cinema maththu thanthrajnaana – prathidhina hosadhu.')"
+C) "He nods warmly and says in Kannada:
+    'ಪ್ರತಿದಿನ ಬೆಳಿಗ್ಗೆ ಮತ್ತು ಸಂಜೆ ಆರು ಗಂಟೆಗೆ ಹೊಸ ಬುಲೆಟಿನ್.' (pronounced 'Prathidhina beligge maththu sanje aaru gantege hosa bulletin.')"
+D) "He smiles proudly and says in Kannada:
+    'ವಿಜಯ್ ನ್ಯೂಸ್ ಕನ್ನಡ – ಕನ್ನಡದ ನೂರಕ್ಕೆ ನೂರು ಎಐ ನ್ಯೂಸ್ ಚಾನೆಲ್!' (pronounced 'Vijay News Kannada – Kannadadha noorakke nooru A-I news channel!')"
+E) "He gives a friendly nod and says in Kannada:
+    'ವಿಜಯ್ ನ್ಯೂಸ್ ಕನ್ನಡ – ದಿನದ ಇಪ್ಪತ್ನಾಲ್ಕು ಗಂಟೆಯೂ ಲೈವ್!' (pronounced 'Vijay News Kannada – dhinadha ippathnaalku ganteyoo live!')"
+   (Vijay, 25 Nov: never ask viewers to subscribe.)
+Pronunciation tip for Gemini: ತ/ದ are soft dental (th/dh), unstressed – that is why the guide spells 'maththu', 'dhesha'.
