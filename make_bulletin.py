@@ -260,7 +260,11 @@ def main(cfg_path, out_mp4):
     # Vijay, 25 Nov 2026: "never ask for subscribe" – drop any subscribe / bell request from the spoken outro
     o = re.sub(r",?\s*(ಚಾನೆಲ್\s*)?ಸಬ್‌?ಸ್ಕ್ರೈಬ್ ಮಾಡಿ", "", cfg.get("outro", ""))          # "…ನೋಡುತ್ತಿರಿ, ಚಾನೆಲ್ ಸಬ್‌ಸ್ಕ್ರೈಬ್ ಮಾಡಿ." -> "…ನೋಡುತ್ತಿರಿ."
     o = re.sub(r"[^.]*(ಸಬ್‌?ಸ್ಕ್ರೈಬ್|ಬೆಲ್ ಐಕಾನ್)[^.]*\.", " ", o)                            # any other subscribe/bell sentence
-    cfg["outro"] = re.sub(r"\s+", " ", o).strip(); work = os.path.join(HERE, "build"); os.makedirs(work, exist_ok=True)
+    cfg["outro"] = re.sub(r"\s+", " ", o).strip()
+    # Vijay, 26 Nov 2026: the bulletin runs in a loop – never "ಸಂಜೆ/ನಾಳೆ ಮತ್ತೆ ಸಿಗೋಣ"; always the same closing line
+    # (one fixed sentence, so its Puck recording is reused every time).
+    cfg["outro"] = os.environ.get("VN_OUTRO", "ಇವು ಈಗಿನ ಪ್ರಮುಖ ಸುದ್ದಿಗಳು. ಇತ್ತೀಚಿನ ಸುದ್ದಿಗಳೊಂದಿಗೆ ಶೀಘ್ರದಲ್ಲೇ ಮತ್ತೆ ಬರುತ್ತೇವೆ. ವಿಜಯ್ ನ್ಯೂಸ್ ನೋಡುತ್ತಿರಿ. ನಮಸ್ಕಾರ.")
+    work = os.path.join(HERE, "build"); os.makedirs(work, exist_ok=True)
     A = lambda n: load(os.path.join(HERE, os.environ.get("VN_MUSIC", "audio2"), n))
     intro_m, sting_m, bed_m, outro_m = A("intro.wav"), A("sting.wav"), A("bed.wav"), A("outro.wav")
     texts = [("intro", cfg["intro"])] + [(f"h{i}", s["headline"]) for i, s in enumerate(cfg["stories"])] + [(f"s{i}", s["body"]) for i, s in enumerate(cfg["stories"])] + [("outro", cfg["outro"])]

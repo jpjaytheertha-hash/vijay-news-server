@@ -87,7 +87,21 @@ def main(out):
             _t.synth_batch(need, work, groups=[ks[i:i + 3] for i in range(0, len(ks), 3)]); puck = True
             print("promo voice: Google Puck", flush=True)
     except Exception as e:
-        print("promo voice: Google failed, Microsoft used:", str(e)[:120], flush=True)
+        # Vijay: keep the Puck reader – use every line already recorded in Puck; a line that is missing is
+        # left silent (its text still shows on screen) instead of switching the whole promo to Microsoft.
+        import tts as _t
+        have = _t.puck_cached(need, work)
+        if need and len(have) >= len(need) - 2:
+            for k_, a_ in have.items():
+                _t.write_clip(a_, work, k_)
+            for k_, _ in need:
+                if k_ not in have:
+                    try: os.remove(os.path.join(work, k_ + ".wav"))
+                    except OSError: pass
+            puck = True
+            print(f"promo voice: Google Puck (cached; silent: {[k_ for k_, _ in need if k_ not in have]})", flush=True)
+        else:
+            print("promo voice: Google failed, Microsoft used:", str(e)[:120], flush=True)
     t = 0; starts = []
     for k, (kind, d, line, txt) in enumerate(SEGMENTS):
         starts.append(t)
@@ -99,7 +113,7 @@ def main(out):
             put(load(wav), t, 1.0)
         else:
             if not puck: synth(line, wav)
-            put(load(wav), t + 0.8, 1.0)
+            if os.path.exists(wav): put(load(wav), t + 0.8, 1.0)
         t += d
     put(outro, base_total - 7.0, 0.8)
     if CR: put(load(sig_p), base_total, 1.0)   # "A VIJAY MELPAL PRODUCTION" with the beats signature
