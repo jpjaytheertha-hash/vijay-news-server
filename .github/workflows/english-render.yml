@@ -73,7 +73,10 @@ jobs:
       - name: Render bulletin
         run: |
           [ -s bulletin.json ] || { echo "no english/bulletin.json yet"; exit 0; }
-          python3 make_bulletin.py bulletin.json bulletin.mp4 2>&1 | grep -v '^frame' | tee render.log
+          for try in 1 2; do   # one more full attempt if a free service hiccups
+            python3 make_bulletin.py bulletin.json bulletin.mp4 2>&1 | grep -v '^frame' | tee render.log
+            [ -s bulletin.mp4 ] && break; echo "render attempt $try failed – retrying in 60 s"; sleep 60
+          done
           test -s bulletin.mp4
       - name: Publish bulletin + Shorts
         run: |

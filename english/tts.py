@@ -29,7 +29,16 @@ def normalize(text, spell=True):
 def _edge(text, wav):
     import edge_tts
     mp3 = wav[:-4] + ".mp3"
-    asyncio.run(edge_tts.Communicate(normalize(text), VOICE, rate=RATE, pitch=PITCH).save(mp3))
+    # Microsoft's free voice service sometimes refuses one request ("NoAudioReceived") – retry with a pause
+    import time
+    for attempt in range(6):
+        try:
+            asyncio.run(edge_tts.Communicate(normalize(text), VOICE, rate=RATE, pitch=PITCH).save(mp3))
+            if os.path.exists(mp3) and os.path.getsize(mp3) > 1000: break
+            raise RuntimeError("empty audio")
+        except Exception as e:
+            if attempt == 5: raise
+            print(f"  Microsoft voice retry {attempt + 1}: {type(e).__name__}", flush=True); time.sleep(5 * (attempt + 1))
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", mp3,
                     "-af", "highpass=f=70,acompressor=threshold=-20dB:ratio=2.5:attack=5:release=80,loudnorm=I=-16:TP=-1.5",
                     "-ar", "44100", "-ac", "1", wav], check=True)
