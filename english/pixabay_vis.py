@@ -68,7 +68,7 @@ REQUIRE = {"field hockey": ["hockey"], "football match": ["football", "soccer"],
            "kabaddi": ["kabaddi"], "badminton": ["badminton"], "tennis": ["tennis"], "chess": ["chess"],
            "fighter jet": ["jet", "aircraft", "airplane", "plane", "air show"], "elephants": ["elephant"], "tiger": ["tiger"]}
 EXCLUDE = {"indian bank branch": ["river", "bank of", "shore"], "field hockey": ["ice", "puck", "soccer", "football"], "football match": ["american football", "rugby"], "cricket match": ["insect"], "fighter jet": ["toy"]}
-STOP = {"and", "the", "of", "a", "in", "city", "match", "india", "indian", "players", "training", "field"}
+STOP = {"and", "the", "of", "a", "in", "city", "match", "india", "indian", "players", "training", "field", "stock", "footage", "video", "clip", "news"}
 
 
 def _fits(q, tags):
@@ -131,6 +131,11 @@ def fetch(s, used, broll_dir, want_video=True, photos=True, qlist=None, need=Non
         if q.startswith("indian ") and not any(x in t for x in INDIA_TAGS): return False
         if india and any(x in t for x in FOREIGN_TAGS): return False   # no dollars, foreign flags or cities for Indian news
         return True
+    if india and not need and os.environ.get("VN_INDIA_STRICT", "1") == "1":
+        # Vijay, 27 Nov: Indian stories must LOOK Indian – try Indian-tagged clips first, then an Indian-tagged
+        # PHOTO (slow zoom) – only then a general clip. A real rupee photo beats an unrelated animation.
+        r = fetch(s, used, broll_dir, want_video=want_video, photos=photos, qlist=qlist, need=INDIA_TAGS)
+        if r[0]: return r
     if want_video:
         for q in qs:
             d = _get(f"https://pixabay.com/api/videos/?key={key}&q={urllib.parse.quote(q)}&safesearch=true&per_page=15&order=popular")
