@@ -12,7 +12,7 @@ SUB=$(oci network subnet list -c "$C" --query 'data[?"prohibit-public-ip-on-vnic
 if [ -z "$SUB" ] || [ "$SUB" = "null" ]; then echo "no public subnet found"; exit 1; fi
 IMG=$(oci compute image list -c "$C" --operating-system "Canonical Ubuntu" --operating-system-version "24.04" \
       --shape VM.Standard.E2.1.Micro --sort-by TIMECREATED --sort-order DESC --query 'data[0].id' --raw-output)
-[ -f ~/.ssh/vn_micro ] || ssh-keygen -t ed25519 -N "" -f ~/.ssh/vn_micro -q
+[ -f ~/.ssh/vn_micro ] || ssh-keygen -t rsa -b 4096 -N "" -f ~/.ssh/vn_micro -q
 cat > ~/vn_cloudinit.sh <<'CI'
 #!/bin/bash
 for i in 1 2 3 4 5; do sudo -u ubuntu git clone --depth 1 https://github.com/jpjaytheertha-hash/vijay-news-server /home/ubuntu/vijay-news-server && break; sleep 20; done
