@@ -29,6 +29,7 @@ jobs:
       TZ: Asia/Kolkata
       VN_TTS: auto
       VN_VOICE: en-IN-PrabhatNeural
+      VN_VBITRATE: '12000'   # constant 12 Mbps: sharper video + keeps the free Oracle stream server from looking idle
       GH_TOKEN: ${{ github.token }}
       REL: english-live
     steps:

@@ -120,7 +120,7 @@ def main(out):
     # ---- video
     bg = mb.make_bg(); LOGO = brand.mark(300); WM = brand.wordmark(90); WMS = brand.wordmark(46, kn=False)
     ff = subprocess.Popen(["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}",
-                           "-r", str(FPS), "-i", "-", "-i", os.path.join(work, "mix.wav"), "-c:v", "libx264", "-preset", "veryfast", "-g", "50", "-keyint_min", "50", "-sc_threshold", "0", "-b:v", "4500k", "-maxrate", "4500k", "-bufsize", "9000k",
+                           "-r", str(FPS), "-i", "-", "-i", os.path.join(work, "mix.wav"), "-c:v", "libx264", "-preset", "veryfast", "-g", "50", "-keyint_min", "50", "-sc_threshold", "0", *mb.vrate(),
                            "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-af", "loudnorm=I=-14:TP=-1.2:LRA=9", "-ar", "44100", "-ac", "2",
                            "-shortest", "-movflags", "+faststart", out], stdin=subprocess.PIPE)
     ci, cur = 0, None

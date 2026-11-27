@@ -77,6 +77,16 @@ def punch(fr, k, seed):
         out = Image.merge("RGB", (R, G, Bc)).convert("RGBA")
     return out
 
+def vrate():
+    """Video bitrate settings. Vijay, 27 Nov: the free Oracle stream server must never look 'idle' (Oracle stops Always Free
+    VMs whose CPU AND network stay under 20% for 7 days). The cloud render therefore makes the video at a higher, CONSTANT
+    bitrate (VN_VBITRATE, kbps; the workflow uses 12000 = ~24% of the server's 50 Mbps line) – sharper 1080p for viewers and
+    real network work for the server. Default 4500 (the old setting)."""
+    k = int(os.environ.get("VN_VBITRATE", "4500"))
+    out = ["-b:v", f"{k}k", "-maxrate", f"{k}k", "-bufsize", f"{2 * k}k"]
+    if k > 4500: out += ["-minrate", f"{k}k", "-x264-params", "nal-hrd=cbr:force-cfr=1"]
+    return out
+
 def ease(x): x = min(max(x, 0), 1); return 1 - (1 - x) ** 3
 def rrect(d, box, r, fill): d.rounded_rectangle(box, r, fill=fill)
 
@@ -583,7 +593,7 @@ def main(cfg_path, out_mp4):
     # ------------------------------------------------ frame generator
     ff = subprocess.Popen(["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}",
                            "-r", str(FPS), "-i", "-", "-i", os.path.join(work, "mix.wav"),
-                           "-c:v", "libx264", "-preset", "veryfast", "-g", "50", "-keyint_min", "50", "-sc_threshold", "0", "-b:v", "4500k", "-maxrate", "4500k", "-bufsize", "9000k", "-pix_fmt", "yuv420p",
+                           "-c:v", "libx264", "-preset", "veryfast", "-g", "50", "-keyint_min", "50", "-sc_threshold", "0", *vrate(), "-pix_fmt", "yuv420p",
                            "-c:a", "aac", "-b:a", "192k", "-af", "loudnorm=I=-14:TP=-1.2:LRA=9", "-ar", "44100", "-ac", "2", "-shortest", "-movflags", "+faststart", out_mp4], stdin=subprocess.PIPE)
     nframes = int(total * FPS)
     seg_i = 0
@@ -813,7 +823,7 @@ def add_opener(out_mp4, work):
                         f"[0:v]fps={FPS},scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},setsar=1[v];[v][1:v]overlay=0:0,format=yuv420p[vo]",
                         "-map", "[vo]", "-map", "2:a", "-t", "12",
                         "-c:v", "libx264", "-preset", "veryfast", "-profile:v", "high", "-g", "50", "-keyint_min", "50", "-sc_threshold", "0",
-                        "-b:v", "4500k", "-maxrate", "4500k", "-bufsize", "9000k", "-r", str(FPS),
+                        *vrate(), "-r", str(FPS),
                         "-c:a", "aac", "-b:a", "192k", "-ar", "44100", "-ac", "2", "-af", "loudnorm=I=-14:TP=-1.2:LRA=9",
                         "-shortest", "-movflags", "+faststart", oe], check=True)
         lst = os.path.join(work, "opener_concat.txt"); joined = out_mp4 + ".join.mp4"
