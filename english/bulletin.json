@@ -1,0 +1,56 @@
+{
+ "channel": "Vijay News English",
+ "channel_en": "VIJAY NEWS ENGLISH",
+ "byline": "A Vijay Melpal Production",
+ "date_en": "Friday, 27 November 2026",
+ "intro": "Hello and welcome to Vijay News English. This is a short technical test of the cloud renderer.",
+ "outro": "Those were the top stories right now.",
+ "stories": [
+  {
+   "section": "Business News",
+   "tag": "BUSINESS",
+   "place": "Mumbai",
+   "headline": "Test: Indian banks and the rupee on screen",
+   "headline_spoken": "This is a test story about Indian banks and the rupee.",
+   "stat": "TEST",
+   "stat_label": "technical test only",
+   "icon": "calendar",
+   "facts": [
+    "This is a test of the cloud video renderer",
+    "Clips should show Indian banks and rupee notes",
+    "No dollars or foreign flags should appear"
+   ],
+   "source": "Source: test",
+   "body": "This is a short technical test of the new cloud renderer for Vijay News English. The video clips behind this story should show Indian banks and Indian rupee notes, never dollars. This test will not be broadcast.",
+   "image_query": "indian rupee notes",
+   "image_queries": [
+    "indian rupee notes",
+    "indian bank branch"
+   ],
+   "place_query": "Mumbai Marine Drive"
+  },
+  {
+   "section": "National News",
+   "tag": "NATIONAL",
+   "place": "New Delhi",
+   "headline": "Test: New Delhi landmark and Indian traffic",
+   "headline_spoken": "This is a test story about New Delhi.",
+   "stat": "2",
+   "stat_label": "test stories",
+   "icon": "pin",
+   "facts": [
+    "Second test story for the cloud renderer",
+    "Clips should show New Delhi and Indian roads",
+    "This test video is never streamed to viewers"
+   ],
+   "source": "Source: test",
+   "body": "This is the second test story. We should see India Gate in New Delhi and busy Indian city traffic. Once this works, the real evening bulletin follows at its usual time.",
+   "image_query": "indian city traffic",
+   "image_queries": [
+    "indian city traffic",
+    "indian railway station"
+   ],
+   "place_query": "India Gate Delhi"
+  }
+ ]
+}
