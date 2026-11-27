@@ -1,0 +1,99 @@
+# Vijay News KANNADA – renders the bulletin in the cloud (free GitHub Actions; the Mac is not needed).
+# Trigger: a new kannada/bulletin.json (or a picture in kannada/pictures/) pushed by the scheduled bulletin task,
+#          or "Run workflow" by hand.
+# Output: release "kannada-live" → bulletin.mp4, promo.mp4, short_1..5.mp4, status.txt
+# The Oracle stream server (server/stream.sh kannada) downloads bulletin.mp4 + promo.mp4 and streams them 24x7.
+# Puck voice: repository secret GEMINI_KEY (typed by Vijay). Without it the Microsoft Kannada voice is used.
+name: Kannada bulletin render
+on:
+  push:
+    branches: [main]
+    paths: ['kannada/bulletin.json', 'kannada/pictures/**']
+  workflow_dispatch:
+    inputs:
+      promo:
+        description: 'Also re-make the promo video'
+        type: boolean
+        default: false
+concurrency:
+  group: kannada-render
+  cancel-in-progress: false
+permissions:
+  contents: write
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 150
+    defaults:
+      run:
+        working-directory: kannada
+    env:
+      TZ: Asia/Kolkata
+      VN_TTS: auto
+      GH_TOKEN: ${{ github.token }}
+      REL: kannada-live
+    steps:
+      - uses: actions/checkout@v4
+      - name: System packages
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg libraqm0 libfribidi0 > /dev/null
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: kannada/requirements.txt
+      - run: pip install -q -r requirements.txt && python3 -c "from PIL import features; assert features.check('raqm'), 'no raqm'"
+      - name: Restore voice + video-clip cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            kannada/build
+            kannada/broll
+          key: kn-cache-${{ github.run_id }}
+          restore-keys: kn-cache-
+      - name: Keys (from repository secrets – never stored in the code)
+        env:
+          PIXABAY: ${{ secrets.PIXABAY_KEY }}
+          GEMINI: ${{ secrets.GEMINI_KEY }}
+        run: |
+          umask 077
+          if [ -n "$PIXABAY" ]; then printf %s "$PIXABAY" > ~/.vijaynews_pixabay_key; else echo "::warning::PIXABAY_KEY secret missing – stories get plain graphics"; fi
+          if [ -n "$GEMINI" ]; then printf %s "$GEMINI" > ~/.vijaynews_gemini_key; else echo "::warning::GEMINI_KEY secret missing – Microsoft Kannada voice instead of Puck"; fi
+          find broll -type f -mtime +3 -delete 2>/dev/null || true
+          # Mac-style picture paths (from older bulletins) → the committed kannada/pictures/ folder
+          python3 - <<'EOF'
+          import json
+          p = "bulletin.json"; d = json.load(open(p)); n = 0
+          for s in d.get("stories", []):
+              for o in [s] + list(s.get("shots") or []):
+                  for k in ("broll", "image"):
+                      v = o.get(k)
+                      if isinstance(v, str) and v.startswith("/") and "/broll/" in v:
+                          o[k] = "pictures/" + v.rsplit("/", 1)[1]; n += 1
+          if n: json.dump(d, open(p, "w"), ensure_ascii=False, indent=1); print("picture paths fixed:", n)
+          EOF
+      - name: Release for the live files
+        run: gh release view "$REL" > /dev/null 2>&1 || gh release create "$REL" --title "Vijay News Kannada – live files" --notes "Newest Kannada bulletin, promo and Shorts. Replaced automatically by the render workflow." --latest=false
+      - name: Promo (when missing, when promo.py changed, or when asked)
+        run: |
+          STAMP=$(cat promo.py promo_clips/*.mp4 audio2/*.wav | md5sum | cut -c1-12)
+          OLD=$(gh release download "$REL" -p promo_stamp.txt -O - 2>/dev/null || true)
+          if [ "${{ inputs.promo }}" = "true" ] || [ "$STAMP" != "$OLD" ]; then
+            python3 promo.py promo.mp4 2>&1 | tail -3
+            echo "$STAMP" > promo_stamp.txt
+            gh release upload "$REL" promo.mp4 promo_stamp.txt --clobber
+          else echo "promo unchanged"; fi
+      - name: Render bulletin
+        run: |
+          [ -s bulletin.json ] || { echo "no kannada/bulletin.json yet"; exit 0; }
+          for try in 1 2; do   # one more full attempt if a free service hiccups
+            python3 make_bulletin.py bulletin.json bulletin.mp4 2>&1 | grep -v '^frame' | tee render.log
+            [ -s bulletin.mp4 ] && break; echo "render attempt $try failed – retrying in 60 s"; sleep 60
+          done
+          test -s bulletin.mp4
+      - name: Publish bulletin + Shorts
+        run: |
+          [ -s bulletin.mp4 ] || exit 0
+          n=0; for f in $(ls -t shorts/short_*.mp4 2>/dev/null | head -5 | sort); do n=$((n+1)); cp "$f" "short_$n.mp4"; done
+          { echo "rendered: $(date '+%F %H:%M IST')"; echo "commit: $GITHUB_SHA"; grep -E "^(done|visual for story|shots for story|official media|pixabay|opener|Voice|voice|-> )" render.log; } > status.txt
+          gh release upload "$REL" bulletin.mp4 status.txt $(ls short_*.mp4 2>/dev/null) --clobber
+          echo "### Rendered" >> $GITHUB_STEP_SUMMARY; cat status.txt >> $GITHUB_STEP_SUMMARY
