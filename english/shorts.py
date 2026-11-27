@@ -124,7 +124,7 @@ def make_short(cfg, voices, here, work, header="Top Stories Today", out_name=Non
             lt = tt - t; a = mb.ease(lt / 0.5)
             big = brand.mark(300); fr.alpha_composite(big, (390, 640))
             mb.draw_text(d, 540, 1080, "24x7 English News LIVE", 72, fill=(255, 255, 255, int(255 * a)), anchor="m")
-            mb.draw_text(d, 540, 1180, "Fresh bulletins every morning & evening", 44, fill=mb.GOLD, anchor="m")
+            mb.draw_text(d, 540, 1180, "India & World news, all day", 44, fill=mb.GOLD, anchor="m")
         ff.stdin.write(fr.convert("RGB").tobytes())
     ff.stdin.close(); ff.wait()
     os.replace(out + ".part.mp4", out)

@@ -16,8 +16,6 @@ GOLD, RED, WHITE, NAVY, GREY = mb.GOLD, mb.RED, mb.WHITE, mb.NAVY, mb.GREY
 SEGMENTS = [
     ("clip", 9, "Vijay News English. Accurate news from India and the world.", "Accurate news • India & the World"),
     ("words", 9, "The biggest national, international and business stories, all in one place.", "INDIA|WORLD|BUSINESS"),
-    ("clip", 9, "Two fresh news bulletins, every single day.", "Two fresh bulletins every day"),
-    ("times", 9, "Every morning at eight, and every evening at seven.", ""),
     ("clip", 9, "Every story checked with more than one reliable source.", "Verified news • 2+ sources"),
     ("card", 9, "And we show you the source of every story, right on screen.", "Source shown for every story"),
     ("clip", 9, "A fully AI-produced English news channel, live twenty-four by seven.", "Fully AI-produced • LIVE 24x7"),

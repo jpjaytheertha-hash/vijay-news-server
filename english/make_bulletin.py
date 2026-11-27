@@ -754,11 +754,11 @@ def main(cfg_path, out_mp4):
             wmc = brand.wordmark(84, kn=False); wmc.putalpha(wmc.getchannel("A").point(lambda v: int(v * a)))
             fr2.alpha_composite(wmc, (W // 2 - wmc.width // 2, 500))
             draw_text(d2, W // 2, 720, "Thank you for watching", 52, fill=GOLD + (int(255 * a),), anchor="m")
-            b = ease((lt - 1.0) / 0.5); bw = text_w("New bulletins every morning & evening", 44) + 120
+            b = ease((lt - 1.0) / 0.5); bw = text_w("24x7 English News LIVE", 44) + 120
             pulse = 1 + 0.03 * math.sin(lt * 5)
             bx0, by0 = W // 2 - bw * pulse / 2, 770
             rrect(d2, (bx0, by0, bx0 + bw * pulse, by0 + 92 * pulse), 46, RED + (int(255 * b),))
-            draw_text(d2, W // 2, by0 + 62 * pulse, "New bulletins every morning & evening", 44, fill=(255, 255, 255, int(255 * b)), anchor="m")
+            draw_text(d2, W // 2, by0 + 62 * pulse, "24x7 English News LIVE", 44, fill=(255, 255, 255, int(255 * b)), anchor="m")
             fr.alpha_composite(fr2)
 
         k = max([math.exp(-(t - h) * 9) for h in HITS if 0 <= t - h < 0.5] + [0])
