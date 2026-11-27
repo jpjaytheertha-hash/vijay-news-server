@@ -18,3 +18,9 @@ upload.err
 .promo_stamp
 .greet_*
 specials/*.done
+# English channel (cloud render) – generated files never go into git
+english/shorts/
+english/build*/
+english/broll/
+english/*.mp4
+english/*.log

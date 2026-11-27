@@ -1,0 +1,83 @@
+# Vijay News ENGLISH – renders the bulletin in the cloud (free GitHub Actions; the Mac is not needed).
+# Trigger: a new english/bulletin.json pushed by the scheduled bulletin task (or "Run workflow" by hand).
+# Output: release "english-live" → bulletin.mp4, promo.mp4, short_1..4.mp4, status.txt
+# The Oracle stream server (server/stream.sh english) downloads bulletin.mp4 + promo.mp4 and streams them 24x7.
+name: English bulletin render
+on:
+  push:
+    branches: [main]
+    paths: ['english/bulletin.json']
+  workflow_dispatch:
+    inputs:
+      promo:
+        description: 'Also re-make the promo video'
+        type: boolean
+        default: false
+concurrency:
+  group: english-render
+  cancel-in-progress: false
+permissions:
+  contents: write
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    defaults:
+      run:
+        working-directory: english
+    env:
+      TZ: Asia/Kolkata
+      VN_TTS: auto
+      VN_VOICE: en-IN-PrabhatNeural
+      GH_TOKEN: ${{ github.token }}
+      REL: english-live
+    steps:
+      - uses: actions/checkout@v4
+      - name: System packages
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg libraqm0 libfribidi0 > /dev/null
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: english/requirements.txt
+      - run: pip install -q -r requirements.txt && python3 -c "from PIL import features; assert features.check('raqm'), 'no raqm'"
+      - name: Restore voice + video-clip cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            english/build
+            english/broll
+          key: en-cache-${{ github.run_id }}
+          restore-keys: en-cache-
+      - name: Keys (from repository secrets – never stored in the code)
+        env:
+          PIXABAY: ${{ secrets.PIXABAY_KEY }}
+          GEMINI_EN: ${{ secrets.GEMINI_EN_KEY }}
+        run: |
+          umask 077
+          if [ -n "$PIXABAY" ]; then printf %s "$PIXABAY" > ~/.vijaynews_pixabay_key; else echo "::warning::PIXABAY_KEY secret missing – stories get plain graphics"; fi
+          if [ -n "$GEMINI_EN" ]; then printf %s "$GEMINI_EN" > ~/.vijaynews_en_gemini_key; fi
+          find broll -type f -mtime +3 -delete 2>/dev/null || true
+      - name: Release for the live files
+        run: gh release view "$REL" > /dev/null 2>&1 || gh release create "$REL" --title "Vijay News English – live files" --notes "Newest English bulletin, promo and Shorts. Replaced automatically by the render workflow." --latest=false
+      - name: Promo (when missing, when promo.py changed, or when asked)
+        run: |
+          STAMP=$(cat promo.py promo_clips/*.mp4 audio2/*.wav tts.py | md5sum | cut -c1-12)
+          OLD=$(gh release download "$REL" -p promo_stamp.txt -O - 2>/dev/null || true)
+          if [ "${{ inputs.promo }}" = "true" ] || [ "$STAMP" != "$OLD" ]; then
+            python3 promo.py promo.mp4 2>&1 | tail -3
+            echo "$STAMP" > promo_stamp.txt
+            gh release upload "$REL" promo.mp4 promo_stamp.txt --clobber
+          else echo "promo unchanged"; fi
+      - name: Render bulletin
+        run: |
+          [ -s bulletin.json ] || { echo "no english/bulletin.json yet"; exit 0; }
+          python3 make_bulletin.py bulletin.json bulletin.mp4 2>&1 | grep -v '^frame' | tee render.log
+          test -s bulletin.mp4
+      - name: Publish bulletin + Shorts
+        run: |
+          [ -s bulletin.mp4 ] || exit 0
+          n=0; for f in $(ls -t shorts/short_*.mp4 2>/dev/null | head -4 | sort); do n=$((n+1)); cp "$f" "short_$n.mp4"; done
+          { echo "rendered: $(date '+%F %H:%M IST')"; echo "commit: $GITHUB_SHA"; grep -E "^(done|visual for story|pixabay|Voice|-> )" render.log; } > status.txt
+          gh release upload "$REL" bulletin.mp4 status.txt $(ls short_*.mp4 2>/dev/null) --clobber
+          echo "### Rendered" >> $GITHUB_STEP_SUMMARY; cat status.txt >> $GITHUB_STEP_SUMMARY
