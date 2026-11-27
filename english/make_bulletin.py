@@ -383,11 +383,11 @@ def main(cfg_path, out_mp4):
         if kind in ("list", "story", "roll", "sting"):
             n = int(ln * SR); reps = np.tile(bed_m, (n // len(bed_m) + 1, 1))[:n]
             fade = np.minimum(1, np.minimum(np.arange(n), n - np.arange(n)) / (0.4 * SR))[:, None]
-            put(reps * fade, st, float(os.environ.get("VN_BED", "0.24")))
+            put(reps * fade, st, float(os.environ.get("VN_BED", "0.18")))
     put(outro_m, CLOSE[1] + CLOSE[2] - 7.0, 0.9)
     for kind, st, ln, d in tl:
         if kind == "credit": put(sig_m, st, 1.0)
-    for k, st in t_voice.items(): put(voices[k], st, 0.0 if os.environ.get("VN_NOVOICE") else 1.0)
+    for k, st in t_voice.items(): put(voices[k], st, 0.0 if os.environ.get("VN_NOVOICE") else float(os.environ.get("VN_VOICE_GAIN", "1.3")))   # Vijay, 27 Nov: "keep announcements slightly high"
     mix /= max(1.0, np.abs(mix).max() / 0.95)
     wavfile.write(os.path.join(work, "mix.wav"), SR, (mix * 32767).astype(np.int16))
 
@@ -567,6 +567,18 @@ def main(cfg_path, out_mp4):
             if a > 0: fr.alpha_composite(strap, (int(cx - 380 + (1 - a) * 100), H - 230))
 
     credit_frame = build_credit()
+    # headline roll: a fresh reader of each story's first clip (the story's own reader keeps its position)
+    ROLL_DIM = Image.new("RGBA", (W, H), (6, 10, 28, 105))
+    _roll = {"i": None, "r": None}
+    def roll_video(i, lt):
+        if i not in brolls or not stories[i].get("broll"): return None
+        if _roll["i"] != i:
+            if _roll["r"] is not None: _roll["r"].close()
+            bp = stories[i]["broll"]; bp = bp if os.path.isabs(bp) else os.path.join(os.path.dirname(os.path.abspath(cfg_path)), bp)
+            try: _roll["r"] = BRoll(bp, 8.0, (W, H))
+            except Exception: _roll["r"] = None
+            _roll["i"] = i
+        return _roll["r"].at(lt + 1.0) if _roll["r"] is not None else None
 
     # ------------------------------------------------ frame generator
     ff = subprocess.Popen(["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}",
@@ -638,7 +650,13 @@ def main(cfg_path, out_mp4):
             add_anchor(fr, "intro", t, show_strap=True)
 
         elif kind == "roll":
-            fr = base(t); s = stories[data]
+            s = stories[data]
+            # Vijay, 27 Nov: "when showing bulletin headlines also we can show their relevant videos in the background"
+            rv = roll_video(data, lt) if FULLB and os.environ.get("VN_ROLL_VIDEO", "1") == "1" else None
+            if rv is not None:
+                fr = rv.convert("RGBA"); fr.alpha_composite(ROLL_DIM); fr.alpha_composite(chrome)
+                o = int((t * 140) % tw); fr.paste(tick.crop((o, 0, o + W - 300, 64)), (300, H - 110))
+            else: fr = base(t)
             p = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(p)
             a = back(lt / 0.3)
             draw_text(d, 120, 250, "HEADLINES", 52, fill=GOLD)

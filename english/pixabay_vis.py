@@ -21,7 +21,7 @@ KW = [
     ("air force", "fighter jet"), ("fighter", "fighter jet"), ("airline", "airplane"), ("airport", "airport"), ("rocket", "rocket launch"),
     ("isro", "rocket launch"), ("satellite", "satellite space"), ("space", "space satellite"),
     ("sensex", "stock market"), ("nifty", "stock market"), ("shares", "stock market"), ("stock", "stock market"), ("gold price", "gold jewellery"),
-    ("rupee", "indian rupee money"), ("inflation", "market vegetables"), ("gdp", "economy finance"), ("rbi", "indian bank branch"),
+    ("rupee", "indian rupee notes"), ("currency", "indian rupee notes"), ("loan", "indian bank branch"), ("atm", "indian atm"), ("inflation", "market vegetables"), ("gdp", "economy finance"), ("rbi", "indian bank branch"),
     ("port", "container port"), ("ship", "cargo ship"), ("railway", "train india"), ("train", "train india"), ("metro", "metro train"),
     ("traffic", "city traffic"), ("highway", "highway traffic"), ("tunnel", "tunnel road"),
     ("elephant", "elephants"), ("tiger", "tiger"), ("forest", "forest"), ("power", "power lines"), ("electricity", "power lines"),
@@ -42,6 +42,23 @@ KW = [
     ("army", "army"), ("military", "army"), ("war", "army"), ("summit", "handshake flags"), ("agreement", "handshake agreement"),
     ("deal", "handshake agreement"), ("parliament", "parliament building"), ("lok sabha", "parliament building"),
 ]
+# Vijay, 27 Nov: "when it is india related bank news show indian related banks, currencies etc not dollar or other
+# country essence" – clips for Indian stories must never show foreign money, flags or cities.
+FOREIGN_TAGS = ("dollar", "dollars", "usd", "euro", "pound sterling", "british pound", "yen", "yuan", "renminbi", "won",
+                "american flag", "us flag", "usa flag", "united states", "america", "wall street", "new york", "manhattan",
+                "london", "british", "england", "chinese", "china", "japan", "japanese", "europe", "european", "germany",
+                "france", "canada", "australia", "dubai", "saudi", "russia", "brazil", "mexico", "bitcoin", "crypto")
+INDIA_WORDS = ("india", "indian", "delhi", "mumbai", "bengaluru", "bangalore", "chennai", "kolkata", "hyderabad", "pune",
+               "kerala", "karnataka", "tamil nadu", "maharashtra", "gujarat", "punjab", "bihar", "uttar pradesh", "rajasthan",
+               "assam", "odisha", "telangana", "andhra", "goa", "jammu", "kashmir", "rbi", "sebi", "isro", "rupee", "lok sabha",
+               "rajya sabha", "sensex", "nifty", "bcci", "iit", "aiims", "infosys", "tcs", "wipro", "reliance", "tata", "adani", "hdfc", "sbi", "ಕರ್ನಾಟಕ", "ಬೆಂಗಳೂರು", "ಭಾರತ")
+def is_india(s):
+    """True when the story is about India (all NATIONAL stories, and any other story whose place/headline is Indian)."""
+    if s.get("tag") in ("NATIONAL", "ರಾಜ್ಯ", "ರಾಷ್ಟ್ರೀಯ"): return True
+    if s.get("tag") in ("INTERNATIONAL", "ಅಂತರರಾಷ್ಟ್ರೀಯ"): return False
+    t = (s.get("place", "") + " " + s.get("headline", "")).lower()
+    return any(w in t for w in INDIA_WORDS)
+
 TAG_DEFAULT = {"NATIONAL": "india", "INTERNATIONAL": "world globe", "BUSINESS": "stock market", "SPORTS": "sports stadium",
                "CINEMA": "cinema film", "TECH": "technology", "SCIENCE": "science laboratory"}
 
@@ -106,12 +123,13 @@ def fetch(s, used, broll_dir, want_video=True, photos=True, qlist=None, need=Non
     if not os.path.exists(KEYFILE): return None, None
     key = open(KEYFILE).read().strip()
     os.makedirs(broll_dir, exist_ok=True)
-    qs = _indian_first(s, qlist or queries(s))
+    qs = _indian_first(s, qlist or queries(s)); india = is_india(s)
     def ok(q, h):
         t = (h.get("tags") or "").lower()
         if not _fits(q, t): return False
         if need and not any(x in t for x in need): return False
         if q.startswith("indian ") and not any(x in t for x in INDIA_TAGS): return False
+        if india and any(x in t for x in FOREIGN_TAGS): return False   # no dollars, foreign flags or cities for Indian news
         return True
     if want_video:
         for q in qs:
@@ -205,7 +223,7 @@ def extra_clips(s, used, broll_dir, first_path, n=3):
 def _indian_first(s, qs):
     """Vijay, 27 Nov: Indian stories must look Indian ("Indian bank videos, very relevant and near to real") –
     for Karnataka/India stories try an Indian version of every search first, then the plain one."""
-    if s.get("tag") not in ("NATIONAL", "BUSINESS") and not (s.get("tag") == "SPORTS" and s.get("india", True)): return qs
+    if not is_india(s): return qs
     out = []
     for q in qs:
         if q and not any(w in q.lower() for w in ("india", "bangalore", "bengaluru", "mysore", "karnataka", "kerala", "delhi", "mumbai", "assam")):
