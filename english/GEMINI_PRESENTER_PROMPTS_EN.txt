@@ -1,0 +1,43 @@
+VIJAY NEWS ENGLISH – AI PRESENTER CLIPS (make in the Gemini app → Video / Veo, 16:9 landscape, ~8 s each)
+=======================================================================================================
+A different presenter from the Kannada channel, so the two channels look like two distinct brands.
+Save the downloaded clips in:  /Volumes/One Touch/VijayNews/English/presenter_clips/
+(any file name – tell Claude, who trims them and puts them on air: clip 1 opens every bulletin,
+ clips 2–5 play at the start of the promo, all with the "AI Presenter" label).
+
+PRESENTER + STUDIO (paste at the start of EVERY prompt)
+-------------------------------------------------------
+A fictional Indian woman TV news presenter in her early 30s, shoulder-length black hair neatly styled,
+natural make-up, wearing a tailored deep navy blazer over an ivory top, small gold earrings, confident,
+warm and composed. She stands in a modern TV news studio with a dark navy blue background, soft red and
+gold accent lights and large blurred screens behind her. She stands on the RIGHT third of the frame
+(leave the left side fairly empty for on-screen text). Medium shot, waist up, eye-level camera,
+subtle slow push-in. Professional broadcast lighting, sharp focus, realistic.
+No on-screen text, no captions, no logos, no subtitles. She is not a real or famous person.
+She speaks clear, standard Indian English with a natural newsreader's pace and pronunciation.
+
+CLIP 1 – WELCOME (opens every bulletin)
+<PRESENTER + STUDIO paragraph>
+She looks into the camera, smiles warmly with a small welcoming nod and says:
+"Hello, and welcome to Vijay News English. The top stories from India and the world, right now."
+Quiet studio ambience, no music.
+
+CLIP 2 – promo
+<PRESENTER + STUDIO paragraph>
+She gestures lightly towards the screens behind her and says:
+"National, international, business, sports and technology. Every big story, in one place."
+
+CLIP 3 – promo
+<PRESENTER + STUDIO paragraph>
+She looks into the camera with a confident nod and says:
+"Every story is checked with more than one reliable source."
+
+CLIP 4 – promo
+<PRESENTER + STUDIO paragraph>
+She smiles and says:
+"Vijay News English. Live, twenty-four by seven."
+
+Rules (same as the Kannada channel): never ask viewers to subscribe; no "morning and evening" lines;
+no real or famous person; the presenter is always labelled "AI Presenter" on screen.
+TIP for the same woman in all clips: make clip 1 first, take a screenshot of her, and attach it to
+clips 2–4 with "Use this same presenter".

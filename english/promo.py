@@ -19,7 +19,7 @@ SEGMENTS = [
     ("clip", 9, "Every story checked with more than one reliable source.", "Verified news • 2+ sources"),
     ("card", 9, "And we show you the source of every story, right on screen.", "Source shown for every story"),
     ("clip", 9, "A fully AI-produced English news channel, live twenty-four by seven.", "Fully AI-produced • LIVE 24x7"),
-    ("ai100", 8, "Vijay News English. India's one hundred percent AI news channel!", "India's 100% AI English news channel"),
+    ("ai100", 8, "Vijay News English. India's one hundred percent AI news channel!", "India's 100% AI news channel"),
     ("cta", 10, "Vijay News English. Live, twenty-four by seven.", "@VijayNewsEnglish"),
 ]
 
@@ -286,11 +286,14 @@ def main(out):
             lg = LOGO.resize((int(300 * min(q, 1.1)) or 1, int(300 * min(q, 1.1)) or 1)); L.alpha_composite(lg, (W // 2 - lg.width // 2, 140))
             L.alpha_composite(WM, (W // 2 - WM.width // 2, 470))
             b = mb.ease((lt - 1.2) / 0.5); pulse = 1 + 0.035 * math.sin(lt * 5)
-            bw = (mb.text_w("24x7 English News LIVE", 54) + 140) * pulse; bx = W // 2 - bw / 2
+            bw = (mb.text_w("LIVE 24x7", 54) + 190) * pulse; bx = W // 2 - bw / 2
             if b > 0:
                 mb.rrect(d2, (bx, 740, bx + bw, 740 + 110 * pulse), 55, RED + (int(255 * b),))
-                mb.draw_text(d2, W // 2, 740 + 76 * pulse, "24x7 English News LIVE", 54, fill=(255, 255, 255, int(255 * b)), anchor="m")
-                d2.text((W // 2, 950), txt, font=mb.font("latr", 40), fill=GREY, anchor="ms")
+                mb.draw_text(d2, W // 2 + 24, 740 + 76 * pulse, "LIVE 24x7", 54, fill=(255, 255, 255, int(255 * b)), anchor="m")
+                dx = W // 2 + 24 - mb.text_w("LIVE 24x7", 54) // 2 - 40; dy = 740 + 56 * pulse
+                d2.ellipse((dx - 12, dy - 12, dx + 12, dy + 12), fill=(255, 255, 255, int(255 * b)))
+                mb.draw_text(d2, W // 2, 905, "India & the World  •  Accurate. Verified. Fast.", 40, fill=(235, 225, 200, int(255 * b)), anchor="m", bold=False)
+                d2.text((W // 2, 985), txt, font=mb.font("latr", 34), fill=GREY, anchor="ms")
             if lt > d - 1.0: L.alpha_composite(Image.new("RGBA", (W, H), (0, 0, 0, int(255 * (lt - d + 1.0)))))
         fr.alpha_composite(L)
         kk = math.exp(-lt * 9) if lt < 0.5 and k else 0

@@ -49,9 +49,14 @@ def wordmark(h, kn=True, kn_text="ENGLISH"):
     d.rounded_rectangle((x2, base - fz * .80, x2 + w2 + pad * 2, base + fz * .12), int(fz * .12), fill=RED_A)
     d.text((x2 + pad, base), "NEWS", font=f, fill=WHITE, anchor="ls")
     if kn:
-        fk = _f("inter-latin-800-normal.ttf", int(fz * .36)); x = 2; sp = int(fz * .09)
-        for ch in kn_text:   # "ENGLISH" in gold, letter-spaced (Vijay News English)
-            d.text((x, base + fz * .56), ch, font=fk, fill=GOLD, anchor="ls"); x += fk.getlength(ch) + sp
+        # Vijay, 28 Nov: edition tag centred under the whole wordmark, tracked gold caps between hairline rules
+        fk = _f("inter-latin-800-normal.ttf", int(fz * .30)); sp = int(fz * .12)
+        tw = sum(fk.getlength(ch) for ch in kn_text) + sp * (len(kn_text) - 1)
+        y = base + fz * .56; x = (W - tw) / 2
+        for ch in kn_text:
+            d.text((x, y), ch, font=fk, fill=GOLD, anchor="ls"); x += fk.getlength(ch) + sp
+        ry = y - fz * .105; rl = max(4, (W - tw) / 2 - fz * .25); th = max(1, int(fz * .025))
+        d.rectangle((0, ry, rl, ry + th), fill=GOLD); d.rectangle((W - rl, ry, W, ry + th), fill=GOLD)
     return im
 
 def lockup(mark_size):
