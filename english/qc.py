@@ -47,7 +47,7 @@ else:
 def texts():
     yield "intro", cfg.get("intro", ""); yield "outro", cfg.get("outro", "")
     for i, s in enumerate(stories, 1):
-        for k in ("headline", "headline_spoken", "body", "section", "place", "stat_label", "source"):
+        for k in ("headline", "headline_spoken", "body", "section", "place", "stat_label"):
             if s.get(k): yield f"story {i} {k}", str(s[k])
         for x in s.get("facts", []): yield f"story {i} fact", x
 NONLATIN = re.compile(r"[ऀ-෿]")          # Devanagari … Kannada … Malayalam
@@ -55,7 +55,10 @@ BANNED = [(r"\bsubscrib", "asks viewers to subscribe"), (r"\b(hit|press) the bel
           (r"\blike,? (and )?share", "like/share request"), (r"morning and evening", "'morning and evening'"),
           (r"\b(twice|two times) a day\b", "'twice a day'"), (r"\bevery (morning|evening)\b", "'every morning/evening'"),
           (r"\b(first|only) (ai|artificial intelligence)\b.*\bchannel", "'first AI channel' claim"),
-          (r"\b(india's|indias) first\b.*\bai\b", "'India's first AI' claim"), (r"\bsee you (again|tomorrow)\b", "'see you again'")]
+          (r"\b(india's|indias) first\b.*\bai\b", "'India's first AI' claim"), (r"\bsee you (again|tomorrow)\b", "'see you again'"),
+          # Vijay, 28 Nov 15:26: never name a news source – check many, rewrite in our own words (credits only for pictures)
+          (r"\b(reuters|bloomberg|techcrunch|afp|associated press|\bap\b|pti|ani|ians|uni|euronews|bbc|cnn|al jazeera|ndtv|times of india|hindustan times|the hindu|indian express|economic times|mint|moneycontrol|business standard|the sentinel|daijiworld|espn|dainik jagran|taipei times|semafor|devdiscourse)\b", "names a news source"),
+          (r"\b(reported|according to (a |the )?(report|media|news))\b", "'reported' attribution to a news outlet"), (r"^\s*sources?\s*:", "'Source:' line")]
 bad = 0
 for where, t in texts():
     if NONLATIN.search(t): F(f"{where}: non-English script in an English text"); bad += 1
@@ -76,11 +79,11 @@ except Exception as e:
 # ---------- 3. stories: sources, mix, visuals
 srcbad = []
 for i, s in enumerate(stories, 1):
-    src = re.sub(r"^\s*source[s]?\s*:\s*", "", s.get("source", ""), flags=re.I)
+    src = re.sub(r"^\s*source[s]?\s*:\s*", "", s.get("sources_checked", s.get("source", "")), flags=re.I)
     names = [x for x in re.split(r",|/|&|\band\b", src) if x.strip()]
     if len(names) < 2: srcbad.append(i)
     if not s.get("place"): F(f"story {i}: no place")
-if srcbad: F(f"stories without 2 named sources: {srcbad}")
+if srcbad: F(f"stories not checked in 2 sources (sources_checked): {srcbad}")
 else: OK(f"{len(stories)} stories, each with 2+ sources")
 mix = {}
 for s in stories: mix[s.get("tag", "?")] = mix.get(s.get("tag", "?"), 0) + 1

@@ -17,7 +17,7 @@ SEGMENTS = [
     ("clip", 9, "Vijay News English. Accurate news from India and the world.", "Accurate news • India & the World"),
     ("words", 9, "The biggest national, international and business stories, all in one place.", "INDIA|WORLD|BUSINESS"),
     ("clip", 9, "Every story checked with more than one reliable source.", "Verified news • 2+ sources"),
-    ("card", 9, "And we show you the source of every story, right on screen.", "Source shown for every story"),
+    ("card", 9, "Every story is checked across many sources, then written in our own clear words.", "Checked, then written in our own words"),
     ("clip", 9, "A fully AI-produced English news channel, live twenty-four by seven.", "Fully AI-produced • LIVE 24x7"),
     ("ai100", 8, "Vijay News English. India's one hundred percent AI news channel!", "India's 100% AI news channel"),
     ("cta", 10, "Vijay News English. Live, twenty-four by seven.", "@VijayNewsEnglish"),
@@ -270,7 +270,7 @@ def main(out):
             if lt > 1.5:
                 hl = mb.ease((lt - 1.5) / 0.4)
                 mb.rrect(d2, (410, 670 + yo, 410 + 560 * hl, 730 + yo), 12, GOLD + (235,))
-                if hl > 0.7: mb.draw_text(d2, 432, 715 + yo, "Source: verified news agencies", 34, fill=NAVY)
+                if hl > 0.7: mb.draw_text(d2, 432, 715 + yo, "Checked across many sources", 34, fill=NAVY)
             if a > 0: mb.draw_text(d2, W // 2, 900, txt, 64, anchor="m")
         elif kind == "ai100":   # big "100% AI" statement
             q = mb.back((lt - 0.3) / 0.5); sc = max(0.01, min(q, 1.12))

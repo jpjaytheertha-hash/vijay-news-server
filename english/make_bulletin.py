@@ -434,6 +434,7 @@ def main(cfg_path, out_mp4):
     stories = cfg["stories"]
     tick_txt = "   •   ".join(s["headline"] for s in stories) + "   •   "
     tw = int(text_w(tick_txt, 36)) + 10
+    TICK_PX = 5   # Vijay, 28 Nov: "the news strip … breaking n cuts" – exactly 5 px every frame (125 px/s), no 5/6 px judder
     tick = Image.new("RGB", (tw * 2 + 10, 64), (255, 255, 255)); td = ImageDraw.Draw(tick)
     for k in range(2): draw_text(td, k * tw, 46, tick_txt, 36, fill=NAVY)
 
@@ -460,7 +461,7 @@ def main(cfg_path, out_mp4):
         if with_chrome:
             fr.alpha_composite(chrome)
             if ticker:
-                o = int((t * 140) % tw); fr.paste(tick.crop((o, 0, o + W - 300, 64)), (300, H - 110))
+                o = (int(round(t * FPS)) * TICK_PX) % tw; fr.paste(tick.crop((o, 0, o + W - 300, 64)), (300, H - 110))
         return fr
 
     # per-story AI visuals: "broll" in bulletin.json = path to a short .mp4 or an image (relative to bulletin.json)
@@ -581,7 +582,7 @@ def main(cfg_path, out_mp4):
             sw = font("beb", 130).getlength(s["stat"])
             d.text((x + 120, ys), s["stat"], font=font("beb", 130), fill=GOLD, anchor="ls")
             for j, ln in enumerate(wrap(s["stat_label"], 34, 1000 - sw - 150)[:2]): draw_text(d, x + 150 + sw, ys - 50 + j * 44, ln, 34)
-            draw_text(d, x, 948, s["source"] + f"   |   Story {i+1} / {len(stories)}", 24, fill=GREY, bold=False)
+            draw_text(d, x, 948, f"Story {i+1} / {len(stories)}", 24, fill=GREY, bold=False)
             panels.append((p, ys - 4)); continue
         if i in brolls and FULLB:
             x = 90; tagw = text_w(s["tag"], 32); FXS[i] = (90, 1060)
@@ -595,7 +596,7 @@ def main(cfg_path, out_mp4):
             bx0 = W - 90 - bw_; rrect(d, (bx0, 680, W - 90, 900), 22, (8, 14, 34, 190)); d.rectangle((bx0, 680, W - 90, 688), fill=GOLD)
             d.text((bx0 + bw_ / 2, 800), s["stat"], font=font("beb", sf), fill=GOLD, anchor="ms")
             for j, l in enumerate(lab): draw_text(d, bx0 + bw_ / 2, 845 + j * 36, l, 28, anchor="m")
-            draw_text(d, x, 940, s["source"] + f"   |   Story {i+1} / {len(stories)}", 24, fill=(225, 225, 225), bold=False)
+            draw_text(d, x, 940, f"Story {i+1} / {len(stories)}", 24, fill=(225, 225, 225), bold=False)
             panels.append((p, 372 + len(hl[:2]) * 88 - 40)); continue
         rrect(d, (90, 200, 720, 900), 36, (255, 255, 255, 18)); rrect(d, (90, 200, 720, 212), 6, RED)
         if i in brolls:
@@ -613,7 +614,7 @@ def main(cfg_path, out_mp4):
         draw_text(d, x + tagw + 70, 266, "• " + s["place"], 32, fill=GOLD)
         hl = wrap(s["headline"], 70, 1040)
         for j, ln in enumerate(hl[:2]): draw_text(d, x, 380 + j * 96, ln, 70)
-        draw_text(d, x, 912, s["source"], 26, fill=GREY, bold=False)
+        # Vijay, 28 Nov: news sources are never named on screen (checked internally, story rewritten in our words)
         panels.append((p, 380 + len(hl[:2]) * 96))
 
     FMAXW = W - FX - 140   # text width available for a fact line
@@ -742,7 +743,7 @@ def main(cfg_path, out_mp4):
             rv = roll_video(data, lt) if FULLB and os.environ.get("VN_ROLL_VIDEO", "1") == "1" else None
             if rv is not None:
                 fr = rv.convert("RGBA"); fr.alpha_composite(ROLL_DIM); fr.alpha_composite(chrome)
-                o = int((t * 140) % tw); fr.paste(tick.crop((o, 0, o + W - 300, 64)), (300, H - 110))
+                o = (int(round(t * FPS)) * TICK_PX) % tw; fr.paste(tick.crop((o, 0, o + W - 300, 64)), (300, H - 110))
             else: fr = base(t)
             p = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(p)
             a = back(lt / 0.3)
@@ -783,7 +784,7 @@ def main(cfg_path, out_mp4):
                     v = bim.convert("RGBA"); al = min(1, lt / 0.5)
                     fr = v if al >= 1 else Image.blend(fr, v, al)
                 fr.alpha_composite(GRAD); fr.alpha_composite(chrome)
-                o = int((t * 140) % tw); fr.paste(tick.crop((o, 0, o + W - 300, 64)), (300, H - 110))
+                o = (int(round(t * FPS)) * TICK_PX) % tw; fr.paste(tick.crop((o, 0, o + W - 300, 64)), (300, H - 110))
             else: fr = base(t)
             a = back(lt / 0.45)
             if lt < 0.45:

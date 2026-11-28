@@ -17,7 +17,7 @@ Taken over from the Vijay News Kannada rulebook on 28 Nov 2026 (Vijay: "bring al
 
 ## 1. QC before publishing (automatic gate – `qc.py`, workflow step "QC")
 Every render is checked before it is published. A **FAIL holds the render** (it is not uploaded; the last good bulletin stays on air). The report `qc_report.txt` and a contact sheet `qc_sheet.jpg` (one frame every 20 s) are uploaded to the `english-live` release after every render.
-- FAIL: video missing/short; not 1920x1080 25 fps; no audible voice; any non-English script in English text; asking to subscribe / like / share / press the bell; "morning and evening", "twice a day", bulletin times; "first/only AI channel" claims; "see you again"; a story without 2 named sources; a story without a place; a spoken date or weekday; no NATIONAL or no INTERNATIONAL story; a foreign place clip on an Indian story.
+- FAIL: video missing/short; not 1920x1080 25 fps; no audible voice; any non-English script in English text; asking to subscribe / like / share / press the bell; "morning and evening", "twice a day", bulletin times; "first/only AI channel" claims; "see you again"; a story not checked in 2 sources (`sources_checked`); a news outlet named or "reported" attribution anywhere said or shown; a story without a place; a spoken date or weekday; no NATIONAL or no INTERNATIONAL story; a foreign place clip on an Indian story.
 - WARN (published, reviewed): length outside 25–30 min; fewer than ~26 stories; a story without a clip/photo; bitrate under 9 Mbps.
 - A human (Claude in a chat, or Vijay) also looks at `qc_sheet.jpg` with the shot checklist (2a) whenever a new edition is made, and sends Vijay a pointer-wise report (PASS / FIXED / LIMIT, story number) when he asks.
 
@@ -44,14 +44,15 @@ Every render is checked before it is published. A **FAIL holds the render** (it 
 4. AI pictures/video when stock has nothing relevant: realistic, labelled "AI illustrative visual", no brand logos; our logo added by us exactly as it is.
 
 ### 2c. Promo
-- Order: (AI presenter, when Vijay's Gemini clips exist) → Indian tricolour / INDIA | WORLD | BUSINESS over an Indian landmark → verified news over Parliament / Rashtrapati Bhavan → source on every story → fully AI 24x7 over an Indian city → 100% AI → call to action (@VijayNewsEnglish) → Vijay News office walkthrough (`branding/office_walkthrough_en.mp4`) → end card ("A VIJAY MELPAL PRODUCTION").
+- Order: (AI presenter, when Vijay's Gemini clips exist) → Indian tricolour / INDIA | WORLD | BUSINESS over an Indian landmark → verified news over Parliament / Rashtrapati Bhavan → checked across many sources, then written in our own words → fully AI 24x7 over an Indian city → 100% AI → call to action (@VijayNewsEnglish) → Vijay News office walkthrough (`branding/office_walkthrough_en.mp4`) → end card ("A VIJAY MELPAL PRODUCTION").
 - Backgrounds: real full-HD footage (Indian flag, Parliament, landmarks), fetched at render time (nothing extra stored).
 - Never say or show "morning and evening", "twice a day" or bulletin times anywhere.
 
-### 2d. Branding, LIVE label, date and time
+### 2d. Branding, LIVE label, date and time, news strip
 - "English" appears ONCE near the logo: the gold ENGLISH edition tag centred under VIJAY NEWS between hairline rules (`brand.wordmark`). Under it: "● LIVE 24x7" and the tagline "India & the World • Accurate. Verified. Fast."; the handle @VijayNewsEnglish only on end cards, small.
 - Time stamp: every bulletin carries "UPDATED <dd-mm-yyyy> | <hh:mm AM/PM> IST" at the bottom left (render time, IST). The cloud stream copies the video without re-encoding, so a ticking clock is not possible on the free server; the stamp is the honest equivalent.
 - The top-right corner stays clear; never bake a fixed date anywhere else.
+- **The headline strip scrolls smoothly** (Vijay, 28 Nov 15:30: "breaking n cuts, strain to eyes"): exactly 5 px every frame (125 px/s, `TICK_PX`), never a fractional speed.
 
 ## 3. Voice: human Indian-English reading
 - Voice chosen by Vijay (28 Nov): Microsoft **en-IN-NeerjaExpressiveNeural**, rate **+10%**. A Google Gemini voice is used only with the English channel's OWN key (`GEMINI_EN_KEY` secret, typed by Vijay) – never the Kannada key.
@@ -63,7 +64,7 @@ Every render is checked before it is published. A **FAIL holds the render** (it 
 
 ## 4. Content: India-level national + international
 - **Bulletin length 25–30 minutes, about 26 stories:** 6 national, 6 international, 3 business/markets, 3 sport, 2 cinema, 5 tech (AI, digital platforms, IT/startups, space, gadgets), 1 viral people story (last). Each body 75–110 words, 5–6 sentences (why it matters, a figure, the reaction, what happens next) – never padding.
-- Facts in **2 reliable sources** (named on screen); a story that can't be confirmed in 2 is dropped. A trending post is a lead, not a source. Neutral politics; empathy for workers, women and farmers.
+- **Never name a news source** (Vijay, 28 Nov 15:26: "do not mention news sources, you may refer from multiple sources but do not mention the source, only for images and video you mention, you have to rewrite the news after you refer many sources"). Check every story in **at least 2 reliable sources** (kept only in bulletin.json `sources_checked`, never shown or spoken), then REWRITE it completely in our own words – no "Reuters reported", no "Source:" line, no outlet names. Newsmakers may still be quoted ("says Piyush Goyal", "the ministry said"). Credits stay ONLY for pictures and video ("Photo: PIB (X)", "Representative visual • Pixabay"). A story that can't be confirmed in 2 sources is dropped. A trending post is a lead, not a source. Neutral politics; empathy for workers, women and farmers.
 - Market wording: "rose / fell / gained / lost", with the exact figures checked at the close.
 - Sport scores refreshed right before the render; a match in progress is reported as "at the time of this report".
 - X check of official handles (PIB, PMO, MEA, ministries, police, federations) is compulsory.

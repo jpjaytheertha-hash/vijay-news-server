@@ -1,6 +1,8 @@
 > **Shots (script and pictures must match):** every story has `"shots": [{"line": "<first words of the sentence>", "query": "<stock search for exactly that line>", "need": ["<tag that must be in the clip>", …]}, …]` – one per sentence (max 4), or `{"line":…, "image": "https://<official photo/video>", "credit": "PIB (X)"}` for an official picture. QC fails a story whose sentences have no planned shot.
 >
-> **Read `english/CHANNEL_RULES.md` first – it is STRICT and wins over anything below** (26 stories / 25–30 min, 2 named sources per story, no spoken date, one shot per line, QC gate).
+> **No news sources on air:** check every story in 2+ reliable sources and list them only in `"sources_checked"` (never shown or spoken); write the story completely in our own words – never "Reuters reported", never a "Source:" line. Credits only for pictures/video.
+>
+> **Read `english/CHANNEL_RULES.md` first – it is STRICT and wins over anything below** (26 stories / 25–30 min, 2 sources checked per story but never named on air, no spoken date, one shot per line, QC gate).
 
 # Vijay News ENGLISH – instructions for the scheduled bulletin task
 (Read by the scheduled task "Vijay News ENGLISH – morning & evening bulletin" at 7:21 AM and 6:21 PM IST.)
@@ -14,7 +16,7 @@ WHERE THINGS LIVE (cloud – the Mac is NOT needed): the English channel is prod
 STEP 1 – Previous bulletins: read english/bulletin.json and the newest 1–2 files in english/archive/ of the repository. Do not repeat their stories unless there is a real new development; do not reuse the previous TECH sub-topics or the same film.
 
 STEP 2 – X FIRST (compulsory, ~10 minutes). Load the Chrome tools in ONE ToolSearch call (tabs_context_mcp, tabs_create_mcp, navigate, get_page_text, computer, tabs_close_mcp). tabs_context_mcp (createIfEmpty true), open ONE new tab. Vijay's Chrome (on his Mac) is signed in to X; if the Mac/Chrome is not reachable, use WebSearch instead and say so. For each page: navigate, wait ~5 s, get_page_text, note posts from the last ~14 hours: https://x.com/PMOIndia, https://x.com/narendramodi, https://x.com/PIB_India, https://x.com/MEAIndia, https://x.com/RBI, https://x.com/isro, https://x.com/RailMinIndia, https://x.com/DRDO_India, https://x.com/ECISVEEP, https://x.com/IMDWeather, and https://x.com/explore/tabs/trending (India trends that are real news topics). Check each account is the official one (verified badge, matching name); skip otherwise. Never sign in, post, like, repost, follow, reply or open DMs; close your tab. If Chrome does not answer after one retry, use WebSearch for news reports of those posts and say so in the notification.
-What becomes news: official decisions, schemes, appointments, launches, diplomatic statements, RBI/ISRO/Railway/weather announcements with real public impact, and the most-discussed real news topic on X (only if a reliable outlet confirms it – "trending on X"; never invent view counts). NOT greetings, birthday wishes, campaigning or attacks on opponents (unless it is the main political news – then report both sides neutrally). Target: at least 2 of the 12 stories come from X when such posts exist. Attribute in the body ("…, the Prime Minister's Office said in a post on X") and in "source" ("Source: PMO India (X), The Hindu"); an official advisory is enough as a source, anything else needs one more reliable source. Write every line yourself – never copy a post's wording.
+What becomes news: official decisions, schemes, appointments, launches, diplomatic statements, RBI/ISRO/Railway/weather announcements with real public impact, and the most-discussed real news topic on X (only if a reliable outlet confirms it – "trending on X"; never invent view counts). NOT greetings, birthday wishes, campaigning or attacks on opponents (unless it is the main political news – then report both sides neutrally). Target: at least 2 of the 12 stories come from X when such posts exist. Never name the outlet or the post on air; record what you checked in "sources_checked" ("PMO India (X), The Hindu"). An official advisory plus one more reliable source confirms a story. Write every line yourself – never copy a post's wording.
 
 STEP 3 – Research (WebSearch; WebFetch the articles you use). 12 stories in total (incl. X stories), all from the last ~14 hours (morning edition: overnight + this morning; evening: today), in EXACTLY this order and mix:
 - 4 × NATIONAL (India-level: governance, Parliament, courts, economy-policy, infrastructure, weather, science, education, health; at least one from a state other than Karnataka; avoid purely local city news),
@@ -43,7 +45,7 @@ STEP 4 – Write english/bulletin.json in exactly this structure (UTF-8, valid J
    "stat_label": "<label for the number, max ~32 characters>",
    "icon": "calendar" | "pin" | "thermo" | "globe",
    "facts": ["<3 fact lines – see FACT LINES>"],
-   "source": "Source: <outlet / official account names>",
+   "sources_checked": "<2+ outlets / official accounts you checked – internal only, never shown or spoken>",
    "body": "<the spoken script, 60–95 words, 3–4 sentences>",
    "image_query": "<main clip, 2–5 English words – see STEP 4b>",
    "image_queries": ["<main clip, same as image_query>", "<second clip: another real angle of the same story>"],
