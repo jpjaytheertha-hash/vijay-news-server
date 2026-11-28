@@ -72,7 +72,7 @@ jobs:
           else echo "promo unchanged"; fi
       - name: Promo 2 – 15 s premium behind-the-scenes promo (when missing or changed)
         run: |
-          STAMP=$(cat promo2.py music_promo2.py tts.py brand.py | md5sum | cut -c1-12)
+          STAMP=$(cat promo2.py music_promo2.py tts.py brand.py $(ls promo2_assets/shot* 2>/dev/null) | md5sum | cut -c1-12)
           OLD=$(gh release download "$REL" -p promo2_stamp.txt -O - 2>/dev/null || true)
           if [ "${{ inputs.promo }}" = "true" ] || [ "$STAMP" != "$OLD" ]; then
             python3 promo2.py promo2.mp4 2>&1 | tail -4

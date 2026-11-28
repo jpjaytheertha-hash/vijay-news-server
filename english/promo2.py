@@ -21,15 +21,18 @@ SHOTS = [
      [("broadcast camera", [["camera"], ["broadcast", "television", "tv", "studio", "video camera", "camcorder", "filming"]]),
       ("tv camera studio", [["camera"]])]),
     (2.4, "Built for India's biggest stories.", "BUILT FOR THE BIG STORIES",
-     [("tv studio", [["studio"], ["tv", "television", "broadcast", "news", "camera", "lights"]]),
-      ("news studio", [["studio"]])]),
+     [("tv studio", [["studio"], ["tv", "television", "broadcast", "news"]]),
+      ("news studio", [["studio"], ["news", "tv", "television"]]),
+      ("film studio camera", [["studio"], ["camera"]])]),
     (2.4, "Experts behind every frame.", "EXPERTS BEHIND EVERY FRAME",
-     [("broadcast control room", [["control room", "broadcast", "editing", "monitor", "mixer", "production"]]),
-      ("video editing", [["editing", "editor", "monitor"]])]),
+     [("video editing", [["editing", "editor", "video editing", "film editing"], ["man", "woman", "people", "person", "working", "editor"]]),
+      ("control room operator", [["control room", "broadcast", "studio"], ["man", "woman", "people", "operator", "working"]]),
+      ("film crew", [["crew", "filming", "film set"], ["camera"]])]),
     (2.6, "On the road, wherever news breaks.", "WHEREVER NEWS BREAKS",
      [("broadcast van", [["van", "truck"], ["broadcast", "satellite", "news", "tv", "television"]]),
-      ("satellite truck", [["truck", "van"], ["satellite", "broadcast"]]),
-      ("indian highway traffic", [["india", "indian"], ["highway", "road", "traffic"]])]),
+      ("india traffic", [["india", "indian", "delhi", "mumbai"], ["traffic", "road", "highway", "street"]]),
+      ("delhi traffic", [["delhi", "india"], ["traffic", "road"]]),
+      ("mumbai traffic", [["mumbai", "india"], ["traffic", "road"]])]),
     (2.6, "India, on the move.", "INDIA, ON THE MOVE",
      [("indian highway traffic", [["india", "indian"], ["highway", "road", "traffic", "street"]]),
       ("india road", [["india", "indian"], ["road", "street", "traffic"]])]),
@@ -43,6 +46,11 @@ def main(out):
     promo.PROMO_BROLL = {k: qs for k, (_, _, _, qs) in enumerate(SHOTS)}
     promo.CGI_OK = set()
     got = promo.promo_broll(work)
+    ai = {}
+    for k in range(len(SHOTS)):   # an AI picture made for exactly this shot wins (labelled "AI illustrative visual")
+        for ext in (".jpg", ".png", ".mp4"):
+            pth = os.path.join(HERE, "promo2_assets", f"shot{k}{ext}")
+            if os.path.exists(pth): got[k] = pth; ai[k] = True
     print("promo2 footage:", {k: os.path.basename(v) for k, v in got.items()}, flush=True)
     total = sum(s[0] for s in SHOTS) + END
     # ---- audio: positive theme + voice lines (slightly above the music)
@@ -75,6 +83,9 @@ def main(out):
     LAB = Image.new("RGBA", (lab_w, 40), (0, 0, 0, 0)); ld = ImageDraw.Draw(LAB)
     ld.rounded_rectangle((0, 0, lab_w - 1, 39), 10, fill=(0, 0, 0, 150)); mb.draw_text(ld, lab_w // 2, 29, "Representative visuals", 22, anchor="m", bold=False)
     BUG = brand.wordmark(40)
+    lw2 = int(mb.text_w("AI illustrative visual", 22, False)) + 40
+    LABAI = Image.new("RGBA", (lw2, 40), (0, 0, 0, 0)); la = ImageDraw.Draw(LABAI)
+    la.rounded_rectangle((0, 0, lw2 - 1, 39), 10, fill=(0, 0, 0, 150)); mb.draw_text(la, lw2 // 2, 29, "AI illustrative visual", 22, anchor="m", bold=False)
     cur = None; seg = -1
     for fi in range(int(total * FPS)):
         tt = fi / FPS
@@ -100,7 +111,7 @@ def main(out):
                 x = 120 - int((1 - a) * 80)
                 d.rectangle((x, 905, x + int(min(tw_, 1680) * a), 913), fill=RED)          # red wipe line
                 d.text((x, 885), txt, font=f, fill=(255, 255, 255, int(255 * a)), anchor="ls")
-            L.alpha_composite(BUG, (W - BUG.width - 60, 50)); L.alpha_composite(LAB, (60, 50))
+            L.alpha_composite(BUG, (W - BUG.width - 60, 50)); L.alpha_composite(LABAI if k in ai else LAB, (60, 50))
             fr.alpha_composite(L)
             if lt < 0.12 and k:                                  # quick white flash cut between shots
                 fr = Image.blend(fr, Image.new("RGBA", (W, H), (255, 255, 255, 255)), 0.35 * (1 - lt / 0.12))
