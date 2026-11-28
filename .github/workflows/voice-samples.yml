@@ -1,0 +1,25 @@
+name: voice-samples
+# Makes short Indian-English voice samples (release "voice-samples") so Vijay can choose the newsreader voice.
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  samples:
+    runs-on: ubuntu-latest
+    steps:
+      - run: pip install -q edge-tts && sudo apt-get -qq install -y ffmpeg > /dev/null
+      - name: Samples
+        run: |
+          T="Good evening, and welcome to Vijay News English. India and the United States are close to a trade deal, says Commerce Minister Piyush Goyal. The Sensex fell nearly one thousand points today. And India's women's hockey team faces China in the Asian Champions Trophy final in Bhopal tonight."
+          n=1
+          for v in en-IN-PrabhatNeural en-IN-NeerjaNeural en-IN-NeerjaExpressiveNeural hi-IN-MadhurNeural hi-IN-SwaraNeural en-IN-AaravNeural en-IN-AashiNeural en-IN-KavyaNeural en-IN-KunalNeural; do
+            for i in 1 2 3; do edge-tts --voice $v --text "$T" --write-media "s.mp3" && break; sleep 5; done || continue
+            [ -s s.mp3 ] || continue
+            ffmpeg -v error -y -i s.mp3 -ar 44100 -b:a 160k "sample_${n}_${v}.mp3" && n=$((n+1)); rm -f s.mp3
+          done
+          ls -la sample_*.mp3
+      - name: Publish
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: |
+          gh release view voice-samples -R "$GITHUB_REPOSITORY" > /dev/null 2>&1 || gh release create voice-samples -R "$GITHUB_REPOSITORY" --title "Voice samples" --notes "Indian-English newsreader voice samples" --latest=false
+          gh release upload voice-samples sample_*.mp3 -R "$GITHUB_REPOSITORY" --clobber
