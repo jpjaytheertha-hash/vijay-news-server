@@ -1,0 +1,286 @@
+{
+ "channel": "Vijay News English",
+ "channel_en": "VIJAY NEWS ENGLISH",
+ "byline": "A Vijay Melpal Production",
+ "date_en": "Saturday, 28 November 2026",
+ "intro": "Hello and welcome to Vijay News English. It is Saturday, the twenty-eighth of November. Here are the top stories from India and around the world, with business, sports, cinema and technology.",
+ "outro": "Those were the top stories right now. We will be back shortly with the latest updates. Keep watching Vijay News English.",
+ "stories": [
+  {
+   "section": "National News",
+   "tag": "NATIONAL",
+   "place": "New Delhi",
+   "headline": "PM Modi meets foreign ministers of 23 Indian Ocean nations",
+   "headline_spoken": "Prime Minister Narendra Modi met foreign ministers from twenty-three Indian Ocean nations in New Delhi.",
+   "stat": "23",
+   "stat_label": "Indian Ocean Rim member states",
+   "icon": "globe",
+   "facts": [
+    "India hosted the 25th IORA Council of Ministers in Delhi",
+    "Ministers of Sri Lanka, Maldives and Mauritius attended",
+    "India chairs the Indian Ocean Rim Association till 2027"
+   ],
+   "source": "Source: PMO India (X), PIB, IANS",
+   "body": "India played host to the Indian Ocean this week. Prime Minister Narendra Modi met foreign ministers and heads of delegation from all twenty-three member states of the Indian Ocean Rim Association in New Delhi on Friday, the Prime Minister's Office said in a post on X. They were in the capital for the grouping's twenty-fifth Council of Ministers, chaired by External Affairs Minister S Jaishankar. India holds the chair until 2027, and the focus is on trade, maritime security and the blue economy.",
+   "image_query": "indian parliament building",
+   "image_queries": [
+    "indian parliament building",
+    "ocean cargo ship"
+   ],
+   "place_query": "India Gate Delhi"
+  },
+  {
+   "section": "National News",
+   "tag": "NATIONAL",
+   "place": "New Delhi",
+   "headline": "India and US close to a trade deal, says Piyush Goyal",
+   "headline_spoken": "Commerce Minister Piyush Goyal says the India-US trade deal is close to the finish line.",
+   "stat": "Close",
+   "stat_label": "stage of India-US trade talks",
+   "icon": "calendar",
+   "facts": [
+    "Goyal says the US trade deal is close to culmination",
+    "Talks aim to avoid higher US tariffs on Indian goods",
+    "Comments came after remarks by the US trade chief"
+   ],
+   "source": "Source: Reuters, News India Times",
+   "body": "A long-awaited trade deal between India and the United States may finally be near. Commerce and Industry Minister Piyush Goyal told an industry conference on Friday that the deal is close to culmination, and that the process which held it back is now taking shape, Reuters reported. Both sides want to avoid higher American tariffs on Indian exports. For exporters of textiles, engineering goods and medicines, a deal could bring much-needed certainty.",
+   "image_query": "indian port containers",
+   "image_queries": [
+    "indian port containers",
+    "indian factory workers"
+   ],
+   "place_query": ""
+  },
+  {
+   "section": "National News",
+   "tag": "NATIONAL",
+   "place": "Kerala",
+   "headline": "President Murmu begins a six-day visit to Kerala, Mizoram and Nagaland",
+   "headline_spoken": "President Droupadi Murmu is on a six-day visit to Kerala, Mizoram and Nagaland.",
+   "stat": "6",
+   "stat_label": "days, three states",
+   "icon": "calendar",
+   "facts": [
+    "President Murmu tours Kerala, Mizoram and Nagaland",
+    "The visit runs from November 27 to December 2",
+    "Programmes are planned in all three states"
+   ],
+   "source": "Source: President's Secretariat (PIB)",
+   "body": "President Droupadi Murmu is on a six-day journey across the south and the north-east. According to the President's Secretariat, she is visiting Kerala, Mizoram and Nagaland from November twenty-seventh to December second. The tour links the country's southern tip with two north-eastern states, where official engagements and public programmes have been planned. Presidential visits to the north-east often focus on development, culture and the region's young people.",
+   "image_query": "kerala backwaters boat",
+   "image_queries": [
+    "kerala backwaters boat",
+    "indian hills village"
+   ],
+   "place_query": "Kerala backwaters"
+  },
+  {
+   "section": "National News",
+   "tag": "NATIONAL",
+   "place": "New Delhi",
+   "headline": "Two years of India's campaign against child marriage",
+   "headline_spoken": "India marked two years of its nationwide campaign to end child marriage.",
+   "stat": "2",
+   "stat_label": "years of Bal Vivah Mukt Bharat",
+   "icon": "calendar",
+   "facts": [
+    "Bal Vivah Mukt Bharat campaign completes two years",
+    "A national event marked the milestone on November 27",
+    "The campaign targets a child-marriage-free India"
+   ],
+   "source": "Source: Ministry of Women and Child Development (PIB)",
+   "body": "A campaign that touches millions of families completed two years this week. The Ministry of Women and Child Development held a national event on Friday to mark two years of Bal Vivah Mukt Bharat, the nationwide drive against child marriage. The campaign works with states, schools and village communities to keep girls in education and stop early marriages, which harm their health and their futures.",
+   "image_query": "indian school girls classroom",
+   "image_queries": [
+    "indian school girls classroom",
+    "indian village women"
+   ],
+   "place_query": ""
+  },
+  {
+   "section": "International News",
+   "tag": "INTERNATIONAL",
+   "place": "Middle East",
+   "headline": "Attacks on tankers and Saudi oil sites push oil prices higher",
+   "headline_spoken": "Fresh attacks on oil tankers and Saudi energy sites have pushed oil prices higher.",
+   "stat": "$95",
+   "stat_label": "Brent crude per barrel, Friday",
+   "icon": "globe",
+   "facts": [
+    "Brent crude posted its first weekly gain this month",
+    "Houthi militants hit Saudi Arabia's Jazan refinery",
+    "Tankers were attacked near the Strait of Hormuz"
+   ],
+   "source": "Source: Reuters, Bloomberg, CNN",
+   "body": "The oil market is nervous again. Brent crude settled near ninety-five dollars a barrel on Friday and posted its first weekly gain in November, after attacks on tankers in and around the Strait of Hormuz and on Saudi energy sites, Reuters reported. Houthi militants struck Saudi Arabia's Jazan refinery on Thursday, Bloomberg said. For India, which imports most of its oil, higher crude prices can mean costlier fuel and pressure on the rupee.",
+   "image_query": "oil tanker ship sea",
+   "image_queries": [
+    "oil tanker ship sea",
+    "oil refinery"
+   ],
+   "place_query": "Dubai skyline"
+  },
+  {
+   "section": "International News",
+   "tag": "INTERNATIONAL",
+   "place": "Geneva",
+   "headline": "Vaccine alliance Gavi restores funding for malaria vaccines",
+   "headline_spoken": "The vaccine alliance Gavi is restoring funding for malaria vaccines.",
+   "stat": "$214m",
+   "stat_label": "grant for malaria vaccines",
+   "icon": "globe",
+   "facts": [
+    "Gavi will again help countries buy malaria vaccines",
+    "The money comes from a 214 million dollar grant",
+    "Gavi had cut malaria funds after a budget shortfall"
+   ],
+   "source": "Source: AFP via Taipei Times",
+   "body": "There is good news in the fight against malaria. The global vaccine alliance Gavi says it will restore a large part of its funding for countries that want to buy malaria vaccines. It plans to use a grant of two hundred and fourteen million dollars from the non-profits GiveWell and Coefficient Giving. Earlier this year Gavi had cut its malaria vaccine budget after falling short of its fundraising target.",
+   "image_query": "doctor vaccine injection",
+   "image_queries": [
+    "doctor vaccine injection",
+    "mosquito"
+   ],
+   "place_query": ""
+  },
+  {
+   "section": "International News",
+   "tag": "INTERNATIONAL",
+   "place": "Uganda",
+   "headline": "Uganda begins Africa's first mRNA Ebola vaccine trial",
+   "headline_spoken": "Uganda has begun Africa's first trial of an mRNA vaccine against Ebola.",
+   "stat": "1st",
+   "stat_label": "mRNA Ebola vaccine trial in Africa",
+   "icon": "globe",
+   "facts": [
+    "Uganda starts the first mRNA Ebola vaccine trial",
+    "mRNA is the technology used in some Covid vaccines",
+    "Success could mean faster responses to outbreaks"
+   ],
+   "source": "Source: Euronews",
+   "body": "Africa has taken a new step against one of its deadliest diseases. Uganda has begun the continent's first trial of an mRNA vaccine against Ebola, Euronews reported. mRNA is the same technology used in some Covid-19 vaccines, and such vaccines can be designed and produced quickly. If the trial succeeds, health workers could respond much faster when an outbreak begins, protecting lives and the doctors and nurses on the front line.",
+   "image_query": "laboratory scientist",
+   "image_queries": [
+    "laboratory scientist",
+    "health workers protective suits"
+   ],
+   "place_query": ""
+  },
+  {
+   "section": "Business News",
+   "tag": "BUSINESS",
+   "place": "Mumbai",
+   "headline": "Sensex falls nearly 1,000 points as oil prices climb",
+   "headline_spoken": "The Sensex fell nearly one thousand points as rising oil prices hit market mood.",
+   "stat": "-989",
+   "stat_label": "Sensex points on Friday",
+   "icon": "calendar",
+   "facts": [
+    "Sensex fell 989 points to close at 83,339",
+    "Nifty 50 lost 277 points to end at 25,607",
+    "IT, auto and bank shares led the selling"
+   ],
+   "source": "Source: Business Standard, IANS",
+   "body": "It was a rough Friday on Dalal Street. The Sensex fell nine hundred and eighty-nine points, or about one point two percent, to close at eighty-three thousand three hundred and thirty-nine. The Nifty fifty slipped two hundred and seventy-seven points to twenty-five thousand six hundred and seven. Profit-taking in IT, auto and banking shares, higher crude oil prices and uncertainty over the India-US trade deal weighed on investors, while metal stocks held up.",
+   "image_query": "mumbai stock exchange building",
+   "image_queries": [
+    "mumbai stock exchange building",
+    "stock market trading screen"
+   ],
+   "place_query": "Mumbai Marine Drive"
+  },
+  {
+   "section": "Sports News",
+   "tag": "SPORTS",
+   "place": "Bhopal",
+   "headline": "India face China in the Women's Asian Champions Trophy final",
+   "headline_spoken": "India's women's hockey team faces China in the Asian Champions Trophy final tonight.",
+   "stat": "6-2",
+   "stat_label": "India's semi-final win over Malaysia",
+   "icon": "thermo",
+   "facts": [
+    "India beat Malaysia 6-2 to reach the final",
+    "The final against China is at 7 PM in Bhopal",
+    "India chase a third straight title and fourth overall"
+   ],
+   "source": "Source: ESPN, Daijiworld, Dainik Jagran",
+   "body": "Indian women's hockey has a big night ahead. The defending champions take on China in the final of the Women's Asian Champions Trophy in Bhopal at seven this evening. India reached the final unbeaten, thrashing Malaysia six-two in the semi-final on Friday, with Deepika leading the scoring charts. A win would give India a third straight title and a record fourth crown, in front of a home crowd.",
+   "image_query": "field hockey match",
+   "image_queries": [
+    "field hockey match",
+    "field hockey stadium crowd"
+   ],
+   "place_query": ""
+  },
+  {
+   "section": "Cinema News",
+   "tag": "CINEMA",
+   "place": "Goa",
+   "headline": "IFFI 2026 closes in Goa as the Golden Peacock is announced",
+   "headline_spoken": "The International Film Festival of India closes in Goa today with the Golden Peacock award.",
+   "stat": "86",
+   "stat_label": "countries with films at IFFI",
+   "icon": "pin",
+   "facts": [
+    "The 57th IFFI closes in Goa on November 28",
+    "The Golden Peacock carries a prize of 51 lakh rupees",
+    "Anthony Chen's We Are All Strangers closes the festival"
+   ],
+   "source": "Source: IFFI, Business Upturn, Argus News",
+   "body": "After nine days of world cinema, the fifty-seventh International Film Festival of India closes in Goa today. The festival, themed Stories Without Borders and directed by Ashutosh Gowariker, brought films from eighty-six countries. The closing ceremony will award the Golden Peacock for best film, which carries a prize of fifty-one lakh rupees. Singaporean director Anthony Chen's We Are All Strangers is the closing film.",
+   "image_query": "film festival cinema",
+   "image_queries": [
+    "film festival cinema",
+    "movie theater audience"
+   ],
+   "place_query": "goa beach"
+  },
+  {
+   "section": "Tech News",
+   "tag": "TECH",
+   "place": "Washington",
+   "headline": "US approves SpaceX plan for one million AI satellites",
+   "headline_spoken": "The US regulator has conditionally approved SpaceX's plan for up to one million AI computing satellites.",
+   "stat": "1 mn",
+   "stat_label": "satellites approved for AI computing",
+   "icon": "globe",
+   "facts": [
+    "FCC gave SpaceX conditional approval on November 25",
+    "The Starmind satellites would run AI data centres",
+    "First satellite must be in orbit by November 2033"
+   ],
+   "source": "Source: TechCrunch, Jerusalem Post",
+   "body": "Could the next data centres be in space? America's Federal Communications Commission has conditionally approved SpaceX's plan to launch up to one million satellites, called Starmind, that would run artificial intelligence workloads in orbit, TechCrunch reported. Supporters say solar-powered computing in space could ease AI's huge demand for energy. But the approval sets long deadlines, with the first satellite due by 2033, and astronomers have raised concerns.",
+   "image_query": "rocket launch",
+   "image_queries": [
+    "rocket launch",
+    "satellite space"
+   ],
+   "place_query": ""
+  },
+  {
+   "section": "Tech News",
+   "tag": "TECH",
+   "place": "Beijing",
+   "headline": "New US computing rules slow Chinese AI models",
+   "headline_spoken": "New US computing rules are slowing the release of Chinese AI models.",
+   "stat": "750",
+   "stat_label": "H100-class chips licence threshold",
+   "icon": "globe",
+   "facts": [
+    "A US rule now needs licences for big overseas computing",
+    "Z.ai's GLM-5.5 model missed its November launch",
+    "The release may slip into 2027, Reuters reported"
+   ],
+   "source": "Source: Reuters via AI Affairs, Distill Intelligence",
+   "body": "The global race in artificial intelligence just got harder for Chinese developers. A new US rule, in force since November nineteenth, requires licences for large overseas computing arrangements, roughly above the power of seven hundred and fifty advanced Nvidia chips. Chinese labs have been renting such capacity abroad. Reuters reported that Z dot ai's next major model, GLM five point five, missed its November launch and could slip into 2027.",
+   "image_query": "computer chip",
+   "image_queries": [
+    "computer chip",
+    "data center servers"
+   ],
+   "place_query": "Shanghai city"
+  }
+ ]
+}
