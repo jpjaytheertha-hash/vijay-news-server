@@ -78,7 +78,15 @@ jobs:
             [ -s bulletin.mp4 ] && break; echo "render attempt $try failed – retrying in 60 s"; sleep 60
           done
           test -s bulletin.mp4
+      - name: QC (CHANNEL_RULES.md section 1 – a failed check holds the render, the last good bulletin stays on air)
+        id: qc
+        run: |
+          [ -s bulletin.mp4 ] || exit 0
+          if python3 qc.py bulletin.json bulletin.mp4 render.log; then echo "pass=1" >> $GITHUB_OUTPUT; else echo "pass=0" >> $GITHUB_OUTPUT; fi
+          echo "### QC" >> $GITHUB_STEP_SUMMARY; sed 's/^/    /' qc_report.txt >> $GITHUB_STEP_SUMMARY
+          gh release upload "$REL" qc_report.txt $(ls qc_sheet.jpg 2>/dev/null) --clobber
       - name: Publish bulletin + Shorts
+        if: steps.qc.outputs.pass == '1'
         run: |
           [ -s bulletin.mp4 ] || exit 0
           n=0; for f in $(ls -t shorts/short_*.mp4 2>/dev/null | head -4 | sort); do n=$((n+1)); cp "$f" "short_$n.mp4"; done

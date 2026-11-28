@@ -55,25 +55,25 @@
   {
    "section": "National News",
    "tag": "NATIONAL",
-   "place": "Kerala",
-   "headline": "President Murmu begins a six-day visit to Kerala, Mizoram and Nagaland",
-   "headline_spoken": "President Droupadi Murmu is on a six-day visit to Kerala, Mizoram and Nagaland.",
-   "stat": "6",
-   "stat_label": "days, three states",
+   "place": "Aizawl, Mizoram",
+   "headline": "President Murmu begins a three-day visit to Mizoram",
+   "headline_spoken": "President Droupadi Murmu begins a three-day visit to Mizoram today.",
+   "stat": "3",
+   "stat_label": "days in Mizoram",
    "icon": "calendar",
    "facts": [
-    "President Murmu tours Kerala, Mizoram and Nagaland",
-    "The visit runs from November 27 to December 2",
-    "Programmes are planned in all three states"
+    "President Murmu is in Mizoram from November 28 to 30",
+    "She is chief guest at the Mizoram University convocation",
+    "More than 11 state departments are coordinating arrangements"
    ],
-   "source": "Source: President's Secretariat (PIB)",
-   "body": "President Droupadi Murmu is on a six-day journey across the south and the north-east. According to the President's Secretariat, she is visiting Kerala, Mizoram and Nagaland from November twenty-seventh to December second. The tour links the country's southern tip with two north-eastern states, where official engagements and public programmes have been planned. Presidential visits to the north-east often focus on development, culture and the region's young people.",
-   "image_query": "kerala backwaters boat",
+   "source": "Source: UNI, The Sentinel",
+   "body": "President Droupadi Murmu begins a three-day visit to Mizoram today. Her main engagement is the convocation of Mizoram University at Tanhril in Aizawl, where she is the chief guest. The state government says more than eleven departments are working together on security, traffic and protocol for the visit. For the students graduating this year, the ceremony brings the nation's highest office to their campus.",
+   "image_query": "aizawl mizoram",
    "image_queries": [
-    "kerala backwaters boat",
-    "indian hills village"
+    "aizawl mizoram",
+    "university graduation ceremony india"
    ],
-   "place_query": "Kerala backwaters"
+   "place_query": "aizawl mizoram"
   },
   {
    "section": "National News",
@@ -120,52 +120,6 @@
     "oil refinery"
    ],
    "place_query": "Dubai skyline"
-  },
-  {
-   "section": "International News",
-   "tag": "INTERNATIONAL",
-   "place": "Geneva",
-   "headline": "Vaccine alliance Gavi restores funding for malaria vaccines",
-   "headline_spoken": "The vaccine alliance Gavi is restoring funding for malaria vaccines.",
-   "stat": "$214m",
-   "stat_label": "grant for malaria vaccines",
-   "icon": "globe",
-   "facts": [
-    "Gavi will again help countries buy malaria vaccines",
-    "The money comes from a 214 million dollar grant",
-    "Gavi had cut malaria funds after a budget shortfall"
-   ],
-   "source": "Source: AFP via Taipei Times",
-   "body": "There is good news in the fight against malaria. The global vaccine alliance Gavi says it will restore a large part of its funding for countries that want to buy malaria vaccines. It plans to use a grant of two hundred and fourteen million dollars from the non-profits GiveWell and Coefficient Giving. Earlier this year Gavi had cut its malaria vaccine budget after falling short of its fundraising target.",
-   "image_query": "doctor vaccine injection",
-   "image_queries": [
-    "doctor vaccine injection",
-    "mosquito"
-   ],
-   "place_query": ""
-  },
-  {
-   "section": "International News",
-   "tag": "INTERNATIONAL",
-   "place": "Uganda",
-   "headline": "Uganda begins Africa's first mRNA Ebola vaccine trial",
-   "headline_spoken": "Uganda has begun Africa's first trial of an mRNA vaccine against Ebola.",
-   "stat": "1st",
-   "stat_label": "mRNA Ebola vaccine trial in Africa",
-   "icon": "globe",
-   "facts": [
-    "Uganda starts the first mRNA Ebola vaccine trial",
-    "mRNA is the technology used in some Covid vaccines",
-    "Success could mean faster responses to outbreaks"
-   ],
-   "source": "Source: Euronews",
-   "body": "Africa has taken a new step against one of its deadliest diseases. Uganda has begun the continent's first trial of an mRNA vaccine against Ebola, Euronews reported. mRNA is the same technology used in some Covid-19 vaccines, and such vaccines can be designed and produced quickly. If the trial succeeds, health workers could respond much faster when an outbreak begins, protecting lives and the doctors and nurses on the front line.",
-   "image_query": "laboratory scientist",
-   "image_queries": [
-    "laboratory scientist",
-    "health workers protective suits"
-   ],
-   "place_query": ""
   },
   {
    "section": "Business News",

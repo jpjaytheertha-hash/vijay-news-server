@@ -286,6 +286,11 @@ def spoken_intro(t):
     """Vijay, 27 Nov: the presenter in the opener (if any) already says the greeting – the voice must not
     repeat it in a different pronunciation, so the spoken intro starts after the greeting (when the opener is used)."""
     import re as _re
+    # Rule (Kannada rulebook 3a, 28 Nov): NO spoken date or weekday – the loop runs past midnight and a recording
+    # cannot change at 00:01. Every intro sentence naming a month, weekday or "today's date" is dropped.
+    DATEW = r"\b(january|february|march|april|may|june|july|august|september|october|november|december|monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b"
+    sents = _re.split(r"(?<=[.!?])\s+", t.strip())
+    t = " ".join(x for x in sents if not _re.search(DATEW, x, _re.I)) or t
     if not os.path.exists(os.path.join(HERE, "opener", "opener.mp4")): return t
     return _re.sub(r"^\s*(Hello|Good morning|Good evening|Namaskara)\s*[,.]?\s*(and\s+)?welcome to Vijay News( English)?\s*[.!]?\s*", "", t, flags=_re.I) or t
 
@@ -413,11 +418,20 @@ def main(cfg_path, out_mp4):
     chrome = Image.new("RGBA", (W, H), (0, 0, 0, 0)); cd = ImageDraw.Draw(chrome)
     chrome.alpha_composite(LOGO_S, (60, 40))
     chrome.alpha_composite(WM_BUG, (166, 50))
-    draw_text(cd, W - 60, 96, cfg.get("date_en") or cfg.get("date_kn", ""), 30, fill=GREY, anchor="r")
+    # Kannada rulebook 2d: never bake a fixed date into the top-right corner (it stays clear); the "UPDATED" stamp shows the time
     cd.rectangle((0, H - 110, W, H - 46), fill=WHITE); cd.rectangle((0, H - 46, W, H), fill=NAVY)
     cd.rectangle((0, H - 110, 290, H - 46), fill=RED); draw_text(cd, 145, H - 64, "HEADLINES", 34, anchor="m")
     cd.rectangle((0, H - 112, W, H - 108), fill=GOLD)
     draw_text(cd, W - 60, H - 14, ("Fully AI-produced news channel • AI presenter & voice" if HAS_A else "Fully AI-produced news channel • AI voice • Illustrative graphics"), 22, fill=GREY, bold=False, anchor="r")
+    # Vijay, 28 Nov: time stamp like the Kannada channel. The cloud stream copies the video without re-encoding
+    # (the free server cannot draw a ticking clock), so the bulletin carries its own "UPDATED" date and time (IST).
+    if os.environ.get("VN_STAMP", "1") == "1":
+        import datetime as _d2
+        now_ = _d2.datetime.now(_d2.timezone(_d2.timedelta(hours=5, minutes=30)))
+        stamp_ = now_.strftime("%d-%m-%Y  |  %I:%M %p IST").lstrip("0")
+        lw = text_w("UPDATED", 22) + 26; sw_ = text_w(stamp_, 22) + 28
+        cd.rectangle((24, H - 40, 24 + lw, H - 10), fill=RED); draw_text(cd, 24 + lw // 2, H - 17, "UPDATED", 22, anchor="m")
+        cd.rectangle((24 + lw, H - 40, 24 + lw + sw_, H - 10), fill=(11, 26, 58)); draw_text(cd, 24 + lw + 14, H - 17, stamp_, 22, bold=True)
 
     def base(t, with_chrome=True, ticker=True):
         off = int((t * 18) % 600); fr = bg.crop((off, 0, off + W, H)).convert("RGBA")

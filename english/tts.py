@@ -5,7 +5,7 @@ import subprocess, shutil, os, asyncio, re
 os.environ["PATH"] = "/opt/homebrew/bin:/usr/local/bin:" + os.environ.get("PATH", "")
 
 VOICE = os.environ.get("VN_VOICE", "en-IN-NeerjaExpressiveNeural")   # Vijay, 28 Nov: sample 3 (Neerja, expressive)
-RATE = os.environ.get("VN_RATE", "+0%")   # Vijay, 27 Nov: natural human pace, not rushed
+RATE = os.environ.get("VN_RATE", "+10%")   # Vijay, 28 Nov: "increase the speed bit fast, 10% more"
 PITCH = os.environ.get("VN_PITCH", "+0Hz")
 
 # spoken forms for a natural Indian English news reader (screen text unchanged)

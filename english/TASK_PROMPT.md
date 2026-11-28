@@ -1,3 +1,5 @@
+> **Read `english/CHANNEL_RULES.md` first – it is STRICT and wins over anything below** (26 stories / 25–30 min, 2 named sources per story, no spoken date, one shot per line, QC gate).
+
 # Vijay News ENGLISH – instructions for the scheduled bulletin task
 (Read by the scheduled task "Vijay News ENGLISH – morning & evening bulletin" at 7:21 AM and 6:21 PM IST.)
 
