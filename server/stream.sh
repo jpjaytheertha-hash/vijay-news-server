@@ -58,7 +58,8 @@ T=0
 while true; do
   if [ $T -le 0 ]; then refresh; T=9; fi     # check GitHub every ~3 minutes (well inside the free API limit)
   T=$((T-1))
-  if [ -z "$B" ]; then echo "$(date '+%F %H:%M') waiting for the first bulletin from GitHub…"; sleep 60; T=0; continue; fi
+  # no bulletin yet → stream the promo alone (it is replaced by bulletin + promo as soon as a bulletin is published)
+  if [ -z "$B" ] && [ -z "$P" ]; then echo "$(date '+%F %H:%M') waiting for the first video from GitHub…"; sleep 60; T=0; continue; fi
   if [ -z "$PID" ] || ! kill -0 "$PID" 2>/dev/null; then
     [ -n "$PID" ] && { echo "$(date '+%F %H:%M') stream dropped – restarting in 20 s"; sleep 20; }
     start_stream; cleanup_old
