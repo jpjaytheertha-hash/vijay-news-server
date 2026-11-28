@@ -204,22 +204,44 @@ class BRoll:
 
 class MultiBRoll:
     """Vijay, 27 Nov: 2–3 short clips for one story (topic, place landmark, second topic) – the story time is
-    split evenly between them; each clip loops if it is shorter than its share. Clips start lazily."""
-    def __init__(self, paths, length, size=None):
+    split evenly between them; each clip loops if it is shorter than its share. Clips start lazily.
+    Vijay, 27 Nov (later): "each line of the story should be analysed and prepare the video clips" – with `starts`
+    (fractions 0..1 of the story time, one per clip) each clip begins when its sentence is read; `kinds` says which
+    on-screen label each clip gets ("pixabay", "ai" or "official")."""
+    def __init__(self, paths, length, size=None, starts=None, kinds=None):
         self.paths, self.len, self.size = paths, max(1.0, length), size
-        self.seg = self.len / len(paths); self.subs = [None] * len(paths)
-        self.mask = BRoll(paths[0], self.seg, size).mask if False else None
+        n = len(paths); self.seg = self.len / n; self.subs = [None] * n; self.mask = None
+        st = list(starts) if starts and len(starts) == n else [j / n for j in range(n)]
+        st[0] = 0.0
+        for j in range(1, n): st[j] = min(max(st[j], st[j - 1] + 0.12), 1.0)   # every clip shows ≥12 % of the story
+        self.t0 = [x * self.len for x in st] + [self.len]
+        self.kinds = list(kinds) if kinds and len(kinds) == n else None
+    def index(self, lt):
+        j = 0
+        while j + 1 < len(self.paths) and lt >= self.t0[j + 1]: j += 1
+        return j
     def _sub(self, j):
         if self.subs[j] is None:
-            self.subs[j] = BRoll(self.paths[j], self.seg, self.size)
-            if j > 0 and self.subs[j - 1] is not None: self.subs[j - 1].close(); self.subs[j - 1] = False
+            self.subs[j] = BRoll(self.paths[j], max(1.0, self.t0[j + 1] - self.t0[j]), self.size)
+            for k in range(len(self.subs)):
+                if k != j and self.subs[k]: self.subs[k].close(); self.subs[k] = False
         return self.subs[j]
     def at(self, lt):
-        j = min(len(self.paths) - 1, max(0, int(max(0, lt) / self.seg)))
-        return self._sub(j).at(lt - j * self.seg)
+        j = self.index(max(0, lt))
+        if self.subs[j] is False: self.subs[j] = None
+        return self._sub(j).at(lt - self.t0[j])
     def close(self):
         for b in self.subs:
             if b: b.close()
+
+_CL = {}
+def credit_label(txt):
+    """Top-right label for an official photo/video: its own credit (e.g. "Photo: PIB (X)")."""
+    if txt not in _CL:
+        w_ = text_w(txt, 22, False) + 40; im = Image.new("RGBA", (w_, 40), (0, 0, 0, 0)); d_ = ImageDraw.Draw(im)
+        d_.rounded_rectangle((0, 0, w_ - 1, 39), 10, fill=(0, 0, 0, 150)); draw_text(d_, w_ // 2, 29, txt, 22, anchor="m", bold=False)
+        _CL[txt] = im
+    return _CL[txt]
 
 def paste_clip(fr, im, cx, bottom):
     x0, y0 = int(cx - im.width / 2), int(bottom - im.height)
@@ -449,6 +471,44 @@ def main(cfg_path, out_mp4):
         import pixabay_vis as _px
         _used = set(); BSRC = {}
         for i, s in enumerate(stories):
+            # Vijay, 28 Nov: "the script and video images at the backend must match" – per-line shot plan (Kannada rulebook 2)
+            if s.get("shots") and not s.get("broll") and FULLB:
+                import hashlib as _h; sp_, st_, kd_ = [], [], []
+                body_ = s.get("body", ""); n_ = max(1, len(body_))
+                os.makedirs(os.path.join(cdir, "broll"), exist_ok=True)
+                for sh in s["shots"][:4]:
+                    p_ = None; kind_ = "pixabay"
+                    img = (sh or {}).get("image")
+                    if img:
+                        if img.startswith("https://"):
+                            ext = ".mp4" if ".mp4" in img.split("?")[0] else ".jpg"
+                            dest = os.path.join(cdir, "broll", "shot_" + _h.md5(img.split("?")[0].encode()).hexdigest()[:12] + ext)
+                            if not os.path.exists(dest):
+                                r = subprocess.run(["curl", "-sSfL", "-m", "90", "-A", "Mozilla/5.0", "-o", dest + ".part", img])
+                                if r.returncode == 0 and os.path.exists(dest + ".part") and os.path.getsize(dest + ".part") > 5000: os.replace(dest + ".part", dest)
+                            if os.path.exists(dest): p_ = dest
+                        else:
+                            q_ = img if os.path.isabs(img) else os.path.join(cdir, img)
+                            if os.path.exists(q_): p_ = q_
+                        kind_ = "official" if sh.get("credit") else "ai"
+                    elif sh.get("query"):
+                        # geography: a line that names a foreign place may show that place even inside an Indian story
+                        s["place_query_active"] = any(f_ in sh["query"].lower() for f_ in _px.FOREIGN_TAGS)
+                        try: p_, _k = _px.fetch(s, _used, os.path.join(cdir, "broll"), want_video=True, photos=True, qlist=[sh["query"]], need=sh.get("need"))
+                        except Exception as e: print("shot skipped:", e, flush=True)
+                    if p_:
+                        pos = body_.find((sh.get("line") or "").strip()[:25]) if sh.get("line") else -1
+                        sp_.append(p_); st_.append(pos / n_ if pos >= 0 else None); kd_.append(kind_)
+                        if kind_ == "official" and not s.get("credit"): s["credit"] = "Photo: " + sh["credit"]
+                s.pop("place_query_active", None)
+                if sp_:
+                    for j in range(len(st_)):   # shots without a found line: spread evenly between neighbours
+                        if st_[j] is None: st_[j] = j / len(st_)
+                    s["broll"] = sp_[0]; s["_shots"] = (sp_, st_, kd_); BSRC[i] = "pixabay" if kd_[0] == "pixabay" else "ai"
+                    if sp_[0].lower().endswith(".mp4"):
+                        _st = _px.still_from_video(sp_[0])
+                        if _st: s["broll_still"] = _st
+                    print("shots for story", i + 1, ":", ", ".join(f"{os.path.basename(a)}@{b:.2f}({c})" for a, b, c in zip(sp_, st_, kd_)), flush=True)
             # Vijay, 26 Nov: a short video clip per story (looped while it is read) – free Pixabay clip first
             if not s.get("broll") and os.environ.get("VN_PIXABAY", "1") == "1":
                 try:
@@ -477,11 +537,14 @@ def main(cfg_path, out_mp4):
                     if FULLB and BSRC.get(i) == "pixabay" and bp.lower().endswith(".mp4") and os.environ.get("VN_MULTICLIP", "1") == "1":
                         try: more = [c for c in _px.extra_clips(s, _used, os.path.join(cdir, "broll"), bp)[1:] if c and c.lower().endswith(".mp4")]
                         except Exception as e: print("extra clips skipped for story", i + 1, ":", e, flush=True)
-                    if more and ln >= 12:
+                    if s.get("_shots") and FULLB:
+                        sp_, st_, kd_ = s["_shots"]; more = sp_[1:]
+                        brolls[i] = MultiBRoll(sp_, ln, (W, H), st_, kd_) if len(sp_) > 1 else BRoll(sp_[0], ln, (W, H))
+                    elif more and ln >= 12:
                         brolls[i] = MultiBRoll([bp] + more[:2], ln, (W, H))
                     else:
                         brolls[i] = BRoll(bp, ln, (W, H) if FULLB else None)
-                    print("visual for story", i + 1, ":", ", ".join(os.path.basename(x) for x in [bp] + (more[:2] if more and ln >= 12 else [])), flush=True)
+                    print("visual for story", i + 1, ":", ", ".join(os.path.basename(x) for x in ([bp] + more[:3] if s.get("_shots") else [bp] + (more[:2] if more and ln >= 12 else []))), flush=True)
                 except Exception as e: print("visual skipped for story", i + 1, ":", e, flush=True)
     BLABEL = Image.new("RGBA", (250, 40), (0, 0, 0, 0)); bl = ImageDraw.Draw(BLABEL)
     bl.rounded_rectangle((0, 0, 249, 39), 10, fill=(0, 0, 0, 150)); draw_text(bl, 125, 29, "AI illustrative visual", 22, anchor="m", bold=False)
@@ -731,7 +794,11 @@ def main(cfg_path, out_mp4):
             t_in = [(lt - (0.9 + j * gap)) / 0.5 for j in range(nf)]
             shown = sum(1 for v in t_in if v > 0)
             if data in brolls and FULLB:
-                fr.alpha_composite(PLABEL if BSRC.get(data) == "pixabay" else BLABEL, (W - 90 - (300 if BSRC.get(data) == "pixabay" else 250), 150))
+                _b = brolls[data]; _seg = _b.index(max(0, lt)) if hasattr(_b, "index") else 0
+                _kd = _b.kinds[_seg] if getattr(_b, "kinds", None) else None
+                if _kd == "official" and stories[data].get("credit"): fr.alpha_composite(credit_label(stories[data]["credit"]), (W - 90 - credit_label(stories[data]["credit"]).width, 150))
+                elif _kd: fr.alpha_composite(PLABEL if _kd == "pixabay" else BLABEL, (W - 90 - (300 if _kd == "pixabay" else 250), 150))
+                else: fr.alpha_composite(PLABEL if BSRC.get(data) == "pixabay" else BLABEL, (W - 90 - (300 if BSRC.get(data) == "pixabay" else 250), 150))
             elif data in brolls:
                 bim = brolls[data].at(lt)
                 if bim is not None:

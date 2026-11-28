@@ -1,3 +1,5 @@
+> **Shots (script and pictures must match):** every story has `"shots": [{"line": "<first words of the sentence>", "query": "<stock search for exactly that line>", "need": ["<tag that must be in the clip>", …]}, …]` – one per sentence (max 4), or `{"line":…, "image": "https://<official photo/video>", "credit": "PIB (X)"}` for an official picture. QC fails a story whose sentences have no planned shot.
+>
 > **Read `english/CHANNEL_RULES.md` first – it is STRICT and wins over anything below** (26 stories / 25–30 min, 2 named sources per story, no spoken date, one shot per line, QC gate).
 
 # Vijay News ENGLISH – instructions for the scheduled bulletin task

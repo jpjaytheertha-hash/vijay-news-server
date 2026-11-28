@@ -22,6 +22,7 @@ Every render is checked before it is published. A **FAIL holds the render** (it 
 - A human (Claude in a chat, or Vijay) also looks at `qc_sheet.jpg` with the shot checklist (2a) whenever a new edition is made, and sends Vijay a pointer-wise report (PASS / FIXED / LIMIT, story number) when he asks.
 
 ## 2. Visuals: think like a news editor, one shot per line
+- **The script and the pictures must match** (Vijay, 28 Nov 15:18): one shot per sentence, planned in bulletin.json `shots` (`line` = the sentence's first words, `query` + `need` for stock, or `image` + `credit` for an official picture); each clip starts when its line is read (`MultiBRoll` start points). QC fails a story whose sentences have no planned shot and lists every SHOT MISSING.
 - One shot per sentence (or part of a long sentence), 2–6 shots per story, each showing that line's WHO, WHAT and WHERE (city, state, country).
 - Mix the kinds: moving video, numbers graphic, real photo of the person named, scene of the people affected. Never a generic filler.
 - **Indian stories LOOK Indian:** Indian banks, rupee notes, Indian streets, Indian people. Never dollars, foreign flags or foreign cities on an Indian story (`pixabay_vis.py` India-strict pass). The story's PLACE decides the place clip (an India-vs-China match in Bhopal never gets Shanghai).

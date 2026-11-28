@@ -92,6 +92,17 @@ noclip = [i for i in range(1, len(stories) + 1) if not re.search(rf"^visual for 
 if noclip: Wn(f"stories with no clip/photo found (graphic used): {noclip}")
 elif log: OK("every story has a clip or photo")
 
+# one shot per line (rulebook 2): every sentence needs a planned shot, and every planned shot must be found
+for i, s in enumerate(stories, 1):
+    nsent = len([x for x in re.split(r"(?<=[.!?])\s+", s.get("body", "").strip()) if x])
+    plan = len(s.get("shots", []))
+    if plan < min(nsent, 4): F(f"story {i}: {plan} planned shots for {nsent} sentences (one shot per line)")
+    m = re.search(rf"^shots for story {i} : (.*)$", log, re.M)
+    if log and plan:
+        got = len(m.group(1).split(", ")) if m else 0
+        if got < min(plan, 4): Wn(f"story {i}: SHOT MISSING – {got} of {min(plan, 4)} planned shots found")
+if stories and all(len(s.get("shots", [])) >= 1 for s in stories): OK("shot plan present for every story")
+
 # foreign place clip on an Indian story (rulebook 2a.3)
 FOREIGN = ("shanghai", "beijing", "china", "dubai", "london", "new york", "washington", "paris", "tokyo", "moscow", "sydney", "toronto", "berlin", "singapore")
 # render.log order: the "pixabay ... for 'query'" lines of a story come right BEFORE its "visual for story N" line

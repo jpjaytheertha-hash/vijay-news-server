@@ -130,7 +130,7 @@ def fetch(s, used, broll_dir, want_video=True, photos=True, qlist=None, need=Non
         if not _fits(q, t): return False
         if need and not any(x in t for x in need): return False
         if q.startswith("indian ") and not any(x in t for x in INDIA_TAGS): return False
-        if india and any(x in t for x in FOREIGN_TAGS): return False   # no dollars, foreign flags or cities for Indian news
+        if india and not s.get("place_query_active") and any(x in t for x in FOREIGN_TAGS): return False   # no dollars, foreign flags or cities for Indian news (a line naming a foreign place may show it)
         return True
     if india and not need and os.environ.get("VN_INDIA_STRICT", "1") == "1":
         # Vijay, 27 Nov: Indian stories must LOOK Indian – try Indian-tagged clips first, then an Indian-tagged

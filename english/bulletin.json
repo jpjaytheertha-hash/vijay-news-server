@@ -27,7 +27,41 @@
     "indian parliament building",
     "ocean cargo ship"
    ],
-   "place_query": "India Gate Delhi"
+   "place_query": "India Gate Delhi",
+   "shots": [
+    {
+     "line": "India played host",
+     "query": "indian ocean ship",
+     "need": [
+      "ocean",
+      "sea",
+      "ship"
+     ]
+    },
+    {
+     "line": "Prime Minister Narendra",
+     "query": "new delhi",
+     "need": [
+      "delhi"
+     ]
+    },
+    {
+     "line": "They were in the capital",
+     "query": "conference meeting hall",
+     "need": [
+      "conference",
+      "meeting"
+     ]
+    },
+    {
+     "line": "India holds the chair",
+     "query": "container port",
+     "need": [
+      "port",
+      "container"
+     ]
+    }
+   ]
   },
   {
    "section": "National News",
@@ -50,7 +84,43 @@
     "indian port containers",
     "indian factory workers"
    ],
-   "place_query": ""
+   "place_query": "",
+   "shots": [
+    {
+     "line": "A long-awaited trade",
+     "query": "container port",
+     "need": [
+      "container",
+      "port"
+     ]
+    },
+    {
+     "line": "Commerce and Industry",
+     "query": "business conference",
+     "need": [
+      "conference",
+      "meeting"
+     ]
+    },
+    {
+     "line": "Both sides want",
+     "query": "cargo ship containers",
+     "need": [
+      "container",
+      "cargo"
+     ]
+    },
+    {
+     "line": "For exporters of textiles",
+     "query": "textile factory",
+     "need": [
+      "textile",
+      "fabric",
+      "loom",
+      "sewing"
+     ]
+    }
+   ]
   },
   {
    "section": "National News",
@@ -73,7 +143,39 @@
     "aizawl mizoram",
     "university graduation ceremony india"
    ],
-   "place_query": "aizawl mizoram"
+   "place_query": "aizawl mizoram",
+   "shots": [
+    {
+     "line": "President Droupadi Murmu",
+     "query": "mizoram",
+     "need": [
+      "mizoram",
+      "aizawl"
+     ]
+    },
+    {
+     "line": "Her main engagement",
+     "query": "graduation ceremony",
+     "need": [
+      "graduation"
+     ]
+    },
+    {
+     "line": "The state government says",
+     "query": "indian police",
+     "need": [
+      "police"
+     ]
+    },
+    {
+     "line": "For the students graduating",
+     "query": "graduation caps students",
+     "need": [
+      "graduation",
+      "student"
+     ]
+    }
+   ]
   },
   {
    "section": "National News",
@@ -96,7 +198,36 @@
     "indian school girls classroom",
     "indian village women"
    ],
-   "place_query": ""
+   "place_query": "",
+   "shots": [
+    {
+     "line": "A campaign that touches",
+     "query": "indian village women",
+     "need": [
+      "village",
+      "women",
+      "woman"
+     ]
+    },
+    {
+     "line": "The Ministry of Women",
+     "query": "indian school girls",
+     "need": [
+      "school",
+      "girl",
+      "student"
+     ]
+    },
+    {
+     "line": "The campaign works with",
+     "query": "indian classroom",
+     "need": [
+      "classroom",
+      "school",
+      "student"
+     ]
+    }
+   ]
   },
   {
    "section": "International News",
@@ -119,7 +250,41 @@
     "oil tanker ship sea",
     "oil refinery"
    ],
-   "place_query": "Dubai skyline"
+   "place_query": "Dubai skyline",
+   "shots": [
+    {
+     "line": "The oil market is nervous",
+     "query": "oil tanker ship",
+     "need": [
+      "tanker",
+      "oil"
+     ]
+    },
+    {
+     "line": "Brent crude settled",
+     "query": "oil pump jack",
+     "need": [
+      "oil",
+      "pump"
+     ]
+    },
+    {
+     "line": "Houthi militants struck",
+     "query": "oil refinery",
+     "need": [
+      "refinery"
+     ]
+    },
+    {
+     "line": "For India, which imports",
+     "query": "petrol pump india",
+     "need": [
+      "petrol",
+      "fuel",
+      "gas station"
+     ]
+    }
+   ]
   },
   {
    "section": "Business News",
@@ -142,7 +307,42 @@
     "mumbai stock exchange building",
     "stock market trading screen"
    ],
-   "place_query": "Mumbai Marine Drive"
+   "place_query": "Mumbai Marine Drive",
+   "shots": [
+    {
+     "line": "It was a rough Friday",
+     "query": "mumbai",
+     "need": [
+      "mumbai"
+     ]
+    },
+    {
+     "line": "The Sensex fell",
+     "query": "stock market chart",
+     "need": [
+      "stock",
+      "chart",
+      "trading"
+     ]
+    },
+    {
+     "line": "The Nifty fifty",
+     "query": "stock trading screen",
+     "need": [
+      "trading",
+      "stock"
+     ]
+    },
+    {
+     "line": "Profit-taking in IT",
+     "query": "indian rupee",
+     "need": [
+      "rupee",
+      "money",
+      "currency"
+     ]
+    }
+   ]
   },
   {
    "section": "Sports News",
@@ -165,7 +365,38 @@
     "field hockey match",
     "field hockey stadium crowd"
    ],
-   "place_query": ""
+   "place_query": "",
+   "shots": [
+    {
+     "line": "Indian women's hockey",
+     "query": "field hockey",
+     "need": [
+      "hockey"
+     ]
+    },
+    {
+     "line": "The defending champions",
+     "query": "bhopal",
+     "need": [
+      "bhopal"
+     ]
+    },
+    {
+     "line": "India reached the final",
+     "query": "field hockey match",
+     "need": [
+      "hockey"
+     ]
+    },
+    {
+     "line": "A win would give",
+     "query": "stadium crowd",
+     "need": [
+      "stadium",
+      "crowd"
+     ]
+    }
+   ]
   },
   {
    "section": "Cinema News",
@@ -188,7 +419,42 @@
     "film festival cinema",
     "movie theater audience"
    ],
-   "place_query": "goa beach"
+   "place_query": "goa beach",
+   "shots": [
+    {
+     "line": "After nine days",
+     "query": "goa",
+     "need": [
+      "goa"
+     ]
+    },
+    {
+     "line": "The festival, themed",
+     "query": "cinema film reel",
+     "need": [
+      "cinema",
+      "film",
+      "movie"
+     ]
+    },
+    {
+     "line": "The closing ceremony",
+     "query": "peacock",
+     "need": [
+      "peacock"
+     ]
+    },
+    {
+     "line": "Singaporean director",
+     "query": "movie theater audience",
+     "need": [
+      "cinema",
+      "theater",
+      "theatre",
+      "audience"
+     ]
+    }
+   ]
   },
   {
    "section": "Tech News",
@@ -211,7 +477,40 @@
     "rocket launch",
     "satellite space"
    ],
-   "place_query": ""
+   "place_query": "",
+   "shots": [
+    {
+     "line": "Could the next data",
+     "query": "satellite orbit",
+     "need": [
+      "satellite"
+     ]
+    },
+    {
+     "line": "America's Federal",
+     "query": "rocket launch",
+     "need": [
+      "rocket",
+      "launch"
+     ]
+    },
+    {
+     "line": "Supporters say",
+     "query": "solar panels",
+     "need": [
+      "solar"
+     ]
+    },
+    {
+     "line": "But the approval",
+     "query": "telescope stars",
+     "need": [
+      "telescope",
+      "stars",
+      "astronomy"
+     ]
+    }
+   ]
   },
   {
    "section": "Tech News",
@@ -234,7 +533,43 @@
     "computer chip",
     "data center servers"
    ],
-   "place_query": "Shanghai city"
+   "place_query": "Shanghai city",
+   "shots": [
+    {
+     "line": "The global race",
+     "query": "artificial intelligence computer",
+     "need": [
+      "computer",
+      "technology",
+      "ai"
+     ]
+    },
+    {
+     "line": "A new US rule",
+     "query": "computer chip",
+     "need": [
+      "chip",
+      "processor",
+      "circuit"
+     ]
+    },
+    {
+     "line": "Chinese labs have",
+     "query": "data center server",
+     "need": [
+      "server",
+      "data center"
+     ]
+    },
+    {
+     "line": "Reuters reported that Z",
+     "query": "beijing city",
+     "need": [
+      "beijing",
+      "china"
+     ]
+    }
+   ]
   }
  ]
 }
