@@ -35,21 +35,26 @@ fetch() {   # $1 = asset name (bulletin.mp4 | promo.mp4)
 }
 refresh() {
   curl -fsS --http1.1 --retry 3 -m 30 -H "Accept: application/vnd.github+json" "$API" -o release.json.new && mv release.json.new release.json
-  B=$(fetch bulletin.mp4); P=$(fetch promo.mp4)
+  B=$(fetch bulletin.mp4); P=$(fetch promo.mp4); P2=$(fetch promo2.mp4)
 }
 start_stream() {
   : > playlist.txt
   [ -n "$B" ] && printf "file '%s'\n" "$DIR/$B" >> playlist.txt
   [ -n "$P" ] && printf "file '%s'\n" "$DIR/$P" >> playlist.txt
-  CUR="$B|$P"; : > "$PROG"
-  echo "$(date '+%F %H:%M') LIVE ($CH): $B + $P"
+  # Vijay, 28 Nov: second promo (15 s behind-the-scenes) – loop = bulletin, promo, bulletin, promo 2
+  if [ -n "$P2" ]; then
+    [ -n "$B" ] && printf "file '%s'\n" "$DIR/$B" >> playlist.txt
+    printf "file '%s'\n" "$DIR/$P2" >> playlist.txt
+  fi
+  CUR="$B|$P|$P2"; : > "$PROG"
+  echo "$(date '+%F %H:%M') LIVE ($CH): $B + $P + $P2"
   ffmpeg -hide_banner -loglevel error -re -stream_loop -1 -f concat -safe 0 -i playlist.txt -c copy \
     -progress "$PROG" -stats_period 5 -f flv "$URL" &
   PID=$!
 }
 stop_stream() { [ -n "$PID" ] && kill "$PID" 2>/dev/null; sleep 2; [ -n "$PID" ] && kill -9 "$PID" 2>/dev/null; wait "$PID" 2>/dev/null; PID=""; }
 cleanup_old() {   # keep only the files in use (saves disk on the 47 GB free server)
-  for f in bulletin_*.mp4 promo_*.mp4; do [ -e "$f" ] || continue; case "$CUR" in *"$f"*) ;; *) rm -f "$f";; esac; done
+  for f in bulletin_*.mp4 promo_*.mp4 promo2_*.mp4; do [ -e "$f" ] || continue; case "$CUR" in *"$f"*) ;; *) rm -f "$f";; esac; done
 }
 trap 'stop_stream; exit 0' INT TERM
 echo "=== Vijay News $CH stream server $(date '+%F %H:%M') ==="
@@ -63,7 +68,7 @@ while true; do
   if [ -z "$PID" ] || ! kill -0 "$PID" 2>/dev/null; then
     [ -n "$PID" ] && { echo "$(date '+%F %H:%M') stream dropped – restarting in 20 s"; sleep 20; }
     start_stream; cleanup_old
-  elif [ "$B|$P" != "$CUR" ]; then
+  elif [ "$B|$P|$P2" != "$CUR" ]; then
     echo "$(date '+%F %H:%M') new video – switching"; stop_stream; sleep 20; start_stream; cleanup_old
   elif [ -f "$PROG" ] && [ $(( $(date +%s) - $(stat -c %Y "$PROG") )) -gt 60 ]; then
     echo "$(date '+%F %H:%M') stream stalled – reconnecting"; stop_stream; sleep 20; start_stream
