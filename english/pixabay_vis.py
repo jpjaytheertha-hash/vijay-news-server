@@ -48,7 +48,8 @@ FOREIGN_TAGS = ("dollar", "dollars", "usd", "euro", "pound sterling", "british p
                 "american flag", "us flag", "usa flag", "united states", "america", "wall street", "new york", "manhattan",
                 "london", "british", "england", "chinese", "china", "japan", "japanese", "europe", "european", "germany",
                 "france", "canada", "australia", "dubai", "saudi", "russia", "brazil", "mexico", "bitcoin", "crypto")
-INDIA_WORDS = ("india", "indian", "delhi", "mumbai", "bengaluru", "bangalore", "chennai", "kolkata", "hyderabad", "pune",
+INDIA_WORDS = ("india", "indian", "bhopal", "lucknow", "ahmedabad", "patna", "chandigarh", "amritsar", "srinagar", "kochi",
+               "guwahati", "agra", "udaipur", "bhubaneswar", "jaipur", "varanasi", "mizoram", "nagaland", "manipur", "meghalaya", "delhi", "mumbai", "bengaluru", "bangalore", "chennai", "kolkata", "hyderabad", "pune",
                "kerala", "karnataka", "tamil nadu", "maharashtra", "gujarat", "punjab", "bihar", "uttar pradesh", "rajasthan",
                "assam", "odisha", "telangana", "andhra", "goa", "jammu", "kashmir", "rbi", "sebi", "isro", "rupee", "lok sabha",
                "rajya sabha", "sensex", "nifty", "bcci", "iit", "aiims", "infosys", "tcs", "wipro", "reliance", "tata", "adani", "hdfc", "sbi", "ಕರ್ನಾಟಕ", "ಬೆಂಗಳೂರು", "ಭಾರತ")
@@ -184,6 +185,11 @@ PLACES = [
     ("kolkata", "kolkata howrah bridge", ["kolkata", "howrah"]), ("assam", "assam tea garden", ["assam"]), ("kerala", "kerala backwaters", ["kerala"]),
     ("goa", "goa beach", ["goa"]), ("tamil nadu", "tamil nadu temple", ["tamil", "chennai", "madurai"]), ("varanasi", "varanasi ghats", ["varanasi"]),
     ("jaipur", "jaipur", ["jaipur"]), ("rajasthan", "rajasthan", ["rajasthan", "jaipur"]),
+    ("bhopal", "bhopal city", ["bhopal"]), ("lucknow", "lucknow", ["lucknow"]), ("ahmedabad", "ahmedabad", ["ahmedabad"]),
+    ("pune", "pune city", ["pune"]), ("patna", "patna", ["patna"]), ("chandigarh", "chandigarh", ["chandigarh"]),
+    ("amritsar", "amritsar golden temple", ["amritsar", "golden temple"]), ("srinagar", "srinagar dal lake", ["srinagar", "dal lake"]),
+    ("kochi", "kochi kerala", ["kochi", "kerala"]), ("guwahati", "guwahati", ["guwahati", "assam"]), ("agra", "taj mahal agra", ["taj mahal", "agra"]),
+    ("udaipur", "udaipur", ["udaipur"]), ("bhubaneswar", "odisha temple", ["odisha", "bhubaneswar", "konark"]),
     ("washington", "washington capitol", ["washington", "capitol"]), ("new york", "new york city", ["new york", "manhattan"]),
     ("united states", "new york city skyline", ["new york", "manhattan", "usa", "america"]), ("us ", "new york city skyline", ["new york", "manhattan", "usa", "america"]),
     ("london", "london big ben", ["london"]), ("britain", "london big ben", ["london"]), ("uk ", "london big ben", ["london"]),
@@ -202,7 +208,15 @@ def place_clip(s, used, broll_dir):
                    "tower", "bridge", "temple", "building", "aerial", "view", "night", "the", "of", "big", "marine", "drive"}
         need = [w for w in s["place_query"].lower().split() if w not in GENERIC][:1]   # the place's own name must be in the clip's tags
         return fetch(s, used, broll_dir, photos=False, qlist=[s["place_query"]], need=need or None)[0]
-    txt = (s.get("place", "") + " " + s.get("headline", "")).lower() + " "
+    # Vijay, 28 Nov: the story's PLACE decides (an India-vs-China match in Bhopal must not get Shanghai);
+    # the headline is only read when the place is empty or not an Indian place.
+    place = (s.get("place", "") or "").lower() + " "
+    for k, q, need in PLACES:
+        if k in place:
+            return fetch(s, used, broll_dir, photos=False, qlist=[q], need=need)[0]
+    if place.strip() and is_india({"place": place}): return None
+    if place.strip() and not s.get("tag") in ("INTERNATIONAL", "WORLD"): return None
+    txt = (place + " " + s.get("headline", "")).lower() + " "
     for k, q, need in PLACES:
         if k in txt:
             return fetch(s, used, broll_dir, photos=False, qlist=[q], need=need)[0]
