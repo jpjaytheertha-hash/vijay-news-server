@@ -4,7 +4,7 @@ Usage: synth(text, out_wav).  Env: VN_VOICE (en-IN-PrabhatNeural | en-IN-NeerjaN
 import subprocess, shutil, os, asyncio, re
 os.environ["PATH"] = "/opt/homebrew/bin:/usr/local/bin:" + os.environ.get("PATH", "")
 
-VOICE = os.environ.get("VN_VOICE", "en-IN-PrabhatNeural")
+VOICE = os.environ.get("VN_VOICE", "en-IN-NeerjaExpressiveNeural")   # Vijay, 28 Nov: sample 3 (Neerja, expressive)
 RATE = os.environ.get("VN_RATE", "+0%")   # Vijay, 27 Nov: natural human pace, not rushed
 PITCH = os.environ.get("VN_PITCH", "+0Hz")
 
