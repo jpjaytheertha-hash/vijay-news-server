@@ -26,9 +26,11 @@ SEGMENTS = [
 # Vijay, 28 Nov: "for english news other promos, use indian flag, indian parliament, and other videos with good
 # quality renditions". Segment number (in SEGMENTS above) -> Pixabay searches; a hit's tags must contain one word
 # from EACH group. Real camera footage only, full HD or better; an Indian photo (slow zoom) only if no video fits.
+CGI_OK = {0}          # a rendered waving tricolour is standard broadcast material
+NOT_FLAG = ("prayer", "mountain", "himalaya", "tibet", "nepal", "buddhist", "river", "landscape", "pakistan", "bangladesh")
 PROMO_BROLL = {
-    0: [("indian flag", [["india", "indian", "tiranga", "tricolor"], ["flag"]]),
-        ("india flag waving", [["india", "indian", "tiranga", "tricolor"], ["flag"]]),
+    0: [("indian flag waving", [["india", "indian", "tiranga", "tricolor", "tricolour"], ["flag"]]),
+        ("indian flag", [["india", "indian", "tiranga", "tricolor", "tricolour"], ["flag"]]),
         ("tiranga", [["india", "indian", "tiranga", "tricolor"], ["flag"]])],
     1: [("india gate", [["india gate"]]), ("new delhi", [["delhi"]])],
     2: [("indian parliament", [["parliament", "sansad"], ["india", "indian", "delhi"]]),
@@ -47,17 +49,19 @@ def promo_broll(work):
     got, used = {}, set()
     fake = [x for x in pv.FAKE_TAGS if x not in ("background", "loop")]   # real footage is often tagged "background"
     def has(t, w): return re.search(r"\b" + re.escape(w) + r"\b", t) is not None
-    def good(h, groups):
+    def good(h, groups, fk=fake, bad=()):
         t = (h.get("tags") or "").lower()
         return all(any(has(t, w) for w in g) for g in groups) and not any(has(t, x) for x in pv.FOREIGN_TAGS) \
-            and not any(has(t, x) for x in fake)
+            and not any(has(t, x) for x in fk) and not any(has(t, x) for x in bad)
     for seg, qs in PROMO_BROLL.items():
+        fk = [] if seg in CGI_OK else fake
+        bad = NOT_FLAG if seg in CGI_OK else ()
         for minw in (1920, 1280):                      # full HD first; 1280 only if nothing better exists
             for q, groups in qs:
                 d = pv._get(f"https://pixabay.com/api/videos/?key={key}&q={urllib.parse.quote(q)}&safesearch=true&per_page=30&order=popular")
                 for h in d.get("hits", []):
                     vid = "pxv_%s" % h.get("id")
-                    if vid in used or h.get("duration", 0) < 8 or h.get("type", "film") != "film" or not good(h, groups): continue
+                    if vid in used or h.get("duration", 0) < 8 or (h.get("type", "film") != "film" and seg not in CGI_OK) or not good(h, groups, fk, bad): continue
                     v = h.get("videos", {}); r = None
                     for name in ("medium", "large"):    # the smallest file that is still >= minw wide
                         x = v.get(name) or {}
@@ -74,7 +78,7 @@ def promo_broll(work):
                 d = pv._get(f"https://pixabay.com/api/?key={key}&q={urllib.parse.quote(q)}&image_type=photo&orientation=horizontal&safesearch=true&per_page=30&order=popular&min_width=1920")
                 for h in d.get("hits", []):
                     pid = "pxp_%s" % h.get("id")
-                    if pid in used or not good(h, groups) or not h.get("largeImageURL"): continue
+                    if pid in used or not good(h, groups, fk, bad) or not h.get("largeImageURL"): continue
                     dest = os.path.join(bdir, pid + ".jpg")
                     if pv._download(h["largeImageURL"], dest):
                         used.add(pid); got[seg] = dest; print(f"promo photo {seg} '{q}': {pid}", flush=True); break
@@ -237,10 +241,14 @@ def main(out):
                 mb.rrect(d2, (60, 50, 60 + mb.text_w("AI Presenter", 30) + 40, 100), 10, (0, 0, 0, 150))
                 mb.draw_text(d2, 80, 88, "AI Presenter", 30, bold=False)
         elif kind == "words":
-            for j, wd in enumerate(txt.split("|")):
+            wds = txt.split("|"); ws = [mb.text_w(wd, 150) for wd in wds]; gap = 110
+            sc_ = min(1.0, (W - 240) / (sum(ws) + gap * (len(ws) - 1))); ws = [w_ * sc_ for w_ in ws]
+            xs, x_ = [], W / 2 - (sum(ws) + gap * sc_ * (len(ws) - 1)) / 2
+            for w_ in ws: xs.append(int(x_ + w_ / 2)); x_ += w_ + gap * sc_
+            for j, wd in enumerate(wds):
                 q = mb.back((lt - 0.6 - j * 0.9) / 0.4)
                 if q > 0:
-                    sz = max(10, int(150 * min(q, 1.15))); x = W // 2 + (j - 1) * 560
+                    sz = max(10, int(150 * sc_ * min(q, 1.15))); x = xs[j]
                     mb.draw_text(d2, x, 600, wd, sz, fill=(GOLD if j == 1 else WHITE), anchor="m")
             if lt > 3.6: mb.draw_text(d2, W // 2, 780, "Top stories, all in one place", 56, fill=GREY, anchor="m")
         elif kind == "times":
