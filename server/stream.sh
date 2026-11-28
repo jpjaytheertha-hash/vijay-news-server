@@ -27,14 +27,14 @@ fetch() {   # $1 = asset name (bulletin.mp4 | promo.mp4)
   f="${1%.mp4}_$id.mp4"
   if [ ! -s "$f" ]; then
     url=$(jq -r --arg n "$1" '.assets[] | select(.name==$n) | .browser_download_url' release.json)
-    if curl -fsSL --retry 3 -m 900 -o "$f.part" "$url" && ffprobe -v error -show_entries format=duration -of csv=p=0 "$f.part" > /dev/null; then
+    if curl -fsSL --http1.1 --retry 5 --retry-all-errors --retry-delay 5 -m 1800 -o "$f.part" "$url" && ffprobe -v error -show_entries format=duration -of csv=p=0 "$f.part" > /dev/null; then
       mv "$f.part" "$f"; echo "$(date '+%F %H:%M') downloaded $f ($(du -h "$f" | cut -f1))" >&2
     else rm -f "$f.part"; ls -t "${1%.mp4}"_*.mp4 2>/dev/null | grep -v "$f" | head -1; return; fi
   fi
   echo "$f"
 }
 refresh() {
-  curl -fsS -m 30 -H "Accept: application/vnd.github+json" "$API" -o release.json.new && mv release.json.new release.json
+  curl -fsS --http1.1 --retry 3 -m 30 -H "Accept: application/vnd.github+json" "$API" -o release.json.new && mv release.json.new release.json
   B=$(fetch bulletin.mp4); P=$(fetch promo.mp4)
 }
 start_stream() {
