@@ -63,7 +63,7 @@ jobs:
         run: gh release view "$REL" > /dev/null 2>&1 || gh release create "$REL" --title "Vijay News English – live files" --notes "Newest English bulletin, promo and Shorts. Replaced automatically by the render workflow." --latest=false
       - name: Promo (when missing, when promo.py changed, or when asked)
         run: |
-          STAMP=$(cat promo.py promo_clips/*.mp4 audio2/*.wav tts.py | md5sum | cut -c1-12)
+          STAMP=$(cat promo.py promo_clips/*.mp4 branding/office_walkthrough_en.mp4 audio2/*.wav tts.py | md5sum | cut -c1-12)
           OLD=$(gh release download "$REL" -p promo_stamp.txt -O - 2>/dev/null || true)
           if [ "${{ inputs.promo }}" = "true" ] || [ "$STAMP" != "$OLD" ]; then
             python3 promo.py promo.mp4 2>&1 | tail -3

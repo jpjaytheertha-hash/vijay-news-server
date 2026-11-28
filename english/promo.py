@@ -23,10 +23,74 @@ SEGMENTS = [
     ("cta", 10, "Vijay News English. Live, twenty-four by seven.", "@VijayNewsEnglish"),
 ]
 
+# Vijay, 28 Nov: "for english news other promos, use indian flag, indian parliament, and other videos with good
+# quality renditions". Segment number (in SEGMENTS above) -> Pixabay searches; a hit's tags must contain one word
+# from EACH group. Real camera footage only, full HD or better; an Indian photo (slow zoom) only if no video fits.
+PROMO_BROLL = {
+    0: [("indian flag", [["india", "indian", "tiranga", "tricolor"], ["flag"]]),
+        ("india flag waving", [["india", "indian", "tiranga", "tricolor"], ["flag"]]),
+        ("tiranga", [["india", "indian", "tiranga", "tricolor"], ["flag"]])],
+    1: [("india gate", [["india gate"]]), ("new delhi", [["delhi"]])],
+    2: [("indian parliament", [["parliament", "sansad"], ["india", "indian", "delhi"]]),
+        ("parliament new delhi", [["parliament", "sansad"], ["india", "indian", "delhi"]]),
+        ("sansad bhavan", [["parliament", "sansad"], ["india", "indian", "delhi"]]),
+        ("rashtrapati bhavan", [["rashtrapati"]]), ("india gate delhi", [["india gate"]])],
+    4: [("mumbai skyline", [["mumbai"]]), ("mumbai city", [["mumbai"]]), ("bangalore city", [["bangalore", "bengaluru"]])],
+}
+
+def promo_broll(work):
+    """Download the promo backgrounds (cached in build_promo/broll). Returns {segment: path}."""
+    import json, urllib.parse
+    import pixabay_vis as pv
+    if not os.path.exists(pv.KEYFILE): return {}
+    key = open(pv.KEYFILE).read().strip(); bdir = os.path.join(work, "broll"); os.makedirs(bdir, exist_ok=True)
+    got, used = {}, set()
+    fake = [x for x in pv.FAKE_TAGS if x not in ("background", "loop")]   # real footage is often tagged "background"
+    def has(t, w): return re.search(r"\b" + re.escape(w) + r"\b", t) is not None
+    def good(h, groups):
+        t = (h.get("tags") or "").lower()
+        return all(any(has(t, w) for w in g) for g in groups) and not any(has(t, x) for x in pv.FOREIGN_TAGS) \
+            and not any(has(t, x) for x in fake)
+    for seg, qs in PROMO_BROLL.items():
+        for minw in (1920, 1280):                      # full HD first; 1280 only if nothing better exists
+            for q, groups in qs:
+                d = pv._get(f"https://pixabay.com/api/videos/?key={key}&q={urllib.parse.quote(q)}&safesearch=true&per_page=30&order=popular")
+                for h in d.get("hits", []):
+                    vid = "pxv_%s" % h.get("id")
+                    if vid in used or h.get("duration", 0) < 8 or h.get("type", "film") != "film" or not good(h, groups): continue
+                    v = h.get("videos", {}); r = None
+                    for name in ("medium", "large"):    # the smallest file that is still >= minw wide
+                        x = v.get(name) or {}
+                        if x.get("url") and minw <= x.get("width", 0) <= 3840 and x.get("height", 0) * 16 <= x.get("width", 0) * 9 + 32:
+                            r = x; break
+                    if not r: continue
+                    dest = os.path.join(bdir, f"{vid}_{r['width']}.mp4")
+                    if pv._download(r["url"], dest):
+                        used.add(vid); got[seg] = dest; print(f"promo video {seg} '{q}': {vid} {r['width']}x{r['height']}", flush=True); break
+                if seg in got: break
+            if seg in got: break
+        if seg not in got:                             # fallback: a large Indian photo with a slow zoom
+            for q, groups in qs:
+                d = pv._get(f"https://pixabay.com/api/?key={key}&q={urllib.parse.quote(q)}&image_type=photo&orientation=horizontal&safesearch=true&per_page=30&order=popular&min_width=1920")
+                for h in d.get("hits", []):
+                    pid = "pxp_%s" % h.get("id")
+                    if pid in used or not good(h, groups) or not h.get("largeImageURL"): continue
+                    dest = os.path.join(bdir, pid + ".jpg")
+                    if pv._download(h["largeImageURL"], dest):
+                        used.add(pid); got[seg] = dest; print(f"promo photo {seg} '{q}': {pid}", flush=True); break
+                if seg in got: break
+    return got
+
 class Clip:
     def __init__(self, path, start=0.0):
-        self.p = subprocess.Popen(["ffmpeg", "-loglevel", "error", "-ss", str(start), "-i", path, "-vf",
-                                   f"fps={FPS},scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H}",
+        if path.lower().endswith((".jpg", ".jpeg", ".png")):   # a photo: slow zoom
+            src = ["-loop", "1", "-framerate", str(FPS), "-i", path]
+            vf = (f"scale={W*2}:{H*2}:force_original_aspect_ratio=increase,crop={W*2}:{H*2},"
+                  f"zoompan=z='min(1+0.0009*on,1.25)':x='iw/2-iw/zoom/2':y='ih/2-ih/zoom/2':d=1:s={W}x{H}:fps={FPS}")
+        else:
+            src = ["-ss", str(start), "-i", path]
+            vf = f"fps={FPS},scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H}"
+        self.p = subprocess.Popen(["ffmpeg", "-loglevel", "error", *src, "-vf", vf,
                                    "-f", "rawvideo", "-pix_fmt", "rgb24", "-"], stdout=subprocess.PIPE)
         self.last = None
     def next(self):
@@ -46,6 +110,7 @@ def main(out):
     probe = lambda c: float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", c],
                                            capture_output=True, text=True).stdout or 0)
     global SEGMENTS
+    bro = promo_broll(work)
     # Presenter reel (Vijay, 25 Nov: "create such short videos and stitch and keep playing such 3-5 promo videos"):
     # every clip in presenter_promos/ plays back-to-back at the start, trimmed to the speech, with the AI label.
     def speech_bounds(c):
@@ -129,9 +194,14 @@ def main(out):
         if t >= base_total:
             ff.stdin.write(credit_frame(t - base_total, CR).convert("RGB").tobytes()); continue
         k = max(i for i, s in enumerate(starts) if s <= t); kind, d, line, txt = SEGMENTS[k]; lt = t - starts[k]
+        kb = k - len(reel)   # segment number in the SEGMENTS table (PROMO_BROLL keys)
+        if lt < 1 / FPS and kind == "words":
+            cur = Clip(bro[kb]) if kb in bro else None
         if lt < 1 / FPS and kind == "clip":
             if k in seg_pres:
                 cur = Clip(seg_pres[k], seg_start.get(k, 0.0))
+            elif kb in bro:
+                cur = Clip(bro[kb], 1.0)
             elif clips:
                 path = clips[ci % len(clips)]
                 dur_c = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", path],
@@ -147,6 +217,8 @@ def main(out):
             shade = Image.new("RGBA", (W, H), (0, 0, 0, 0)); sd = ImageDraw.Draw(shade)
             for y in range(H // 2, H, 8): sd.rectangle((0, y, W, y + 8), fill=(5, 10, 30, int(200 * (y - H / 2) / (H / 2))))
             fr.alpha_composite(shade)
+        elif kind == "words" and cur is not None and cur.next() is not None:   # Indian landmark behind the words, dimmed
+            fr = Image.blend(cur.last, Image.new("RGB", (W, H), (6, 12, 34)), 0.62).convert("RGBA")
         L = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d2 = ImageDraw.Draw(L)
         a = mb.ease((lt - 0.4) / 0.5)
         if kind == "clip":
@@ -217,6 +289,20 @@ def main(out):
         if kk > 0.02: fr = mb.punch(fr, kk, fi)
         ff.stdin.write(fr.convert("RGB").tobytes())
     ff.stdin.close(); ff.wait(); print("done", out, f"{total:.1f}s", f"{len(pres)} presenter + {len(clips)} other clips")
+    # Vijay, 28 Nov: reuse the Vijay News office walkthrough from the Kannada promo (English captions; the Kannada
+    # sign and end slate cut out) – it plays just before the end card, like on the Kannada channel.
+    ow = os.path.join(HERE, "branding", "office_walkthrough_en.mp4")
+    if CR and os.path.exists(ow):
+        cut = base_total; tmp = out[:-4] + "_ow.mp4"
+        r = subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", out, "-i", ow, "-filter_complex",
+            f"[0:v]trim=0:{cut},setpts=PTS-STARTPTS[v1];[0:a]atrim=0:{cut},asetpts=PTS-STARTPTS,afade=t=out:st={cut - 0.3}:d=0.3[a1];"
+            f"[1:v]fps={FPS},scale={W}:{H},setsar=1,setpts=PTS-STARTPTS[v2];[1:a]aresample=44100,loudnorm=I=-16:TP=-1.5,asetpts=PTS-STARTPTS[a2];"
+            f"[0:v]trim={cut},setpts=PTS-STARTPTS[v3];[0:a]atrim={cut},asetpts=PTS-STARTPTS,afade=t=in:d=0.2[a3];"
+            "[v1][a1][v2][a2][v3][a3]concat=n=3:v=1:a=1[v][a]", "-map", "[v]", "-map", "[a]",
+            "-c:v", "libx264", "-preset", "veryfast", "-g", "50", "-keyint_min", "50", "-sc_threshold", "0", *mb.vrate(),
+            "-pix_fmt", "yuv420p", "-r", str(FPS), "-c:a", "aac", "-b:a", "192k", "-ar", "44100", "-ac", "2", "-movflags", "+faststart", tmp])
+        if r.returncode == 0: os.replace(tmp, out); print("office walkthrough added before the end card", flush=True)
+        else: print("office walkthrough NOT added", flush=True)
 
 if __name__ == "__main__":
     main(sys.argv[1] if len(sys.argv) > 1 else "promo.mp4")
